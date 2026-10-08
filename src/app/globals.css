@@ -1,0 +1,86 @@
+@import "tailwindcss";
+@import "@fontsource/hind-siliguri/400.css";
+@import "@fontsource/hind-siliguri/500.css";
+@import "@fontsource/hind-siliguri/600.css";
+@import "@fontsource/hind-siliguri/700.css";
+@import "@fontsource-variable/inter";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Brand tokens. --brand is overridden at runtime from Settings → Branding. */
+:root {
+  --brand: #17356b;          /* primary navy */
+  --accent: #168ce6;         /* modern blue */
+  --sky: #eaf7ff;
+  --paid: #20b66a;           /* emerald: paid / present only */
+  --due: #f4bc45;            /* gold: amounts due / late only */
+  --danger: #e5484d;
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --surface-2: #f8fafd;
+  --ink: #12213d;
+  --ink-2: #4a5a78;
+  --line: #dde5f0;
+  --chart-1: #168ce6;   /* collected (validated: CVD + contrast) */
+  --chart-2: #c2410c;   /* expenses */
+  color-scheme: light;
+}
+.dark {
+  --sky: #13243f;
+  --bg: #0c1527;
+  --surface: #121e35;
+  --surface-2: #17253f;
+  --ink: #e8eef8;
+  --ink-2: #9fb0cc;
+  --line: #24365a;
+  --chart-1: #2f8fdb;
+  --chart-2: #d9692b;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-brand: var(--brand);
+  --color-accent: var(--accent);
+  --color-sky: var(--sky);
+  --color-paid: var(--paid);
+  --color-due: var(--due);
+  --color-danger: var(--danger);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-line: var(--line);
+  --font-sans: "Inter Variable", "Hind Siliguri", system-ui, sans-serif;
+  --font-bn: "Hind Siliguri", "Noto Sans Bengali", "Inter Variable", sans-serif;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+/* Bengali text: Hind Siliguri first, a little more line height for conjuncts */
+html[lang="bn"] body { font-family: var(--font-bn); line-height: 1.6; }
+
+.num { font-variant-numeric: tabular-nums; }
+
+/* Kantha running stitch — the one decorative motif, used on headers and receipts */
+.stitch {
+  background-image: linear-gradient(90deg, currentColor 55%, transparent 55%);
+  background-size: 10px 2px;
+  background-repeat: repeat-x;
+  height: 2px;
+}
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: white; }
+}
