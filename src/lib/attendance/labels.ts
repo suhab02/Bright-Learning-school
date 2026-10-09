@@ -1,0 +1,46 @@
+const en = {
+  title: "Attendance", section: "Class / section", date: "Date", open: "Open register",
+  save: "Save attendance", saving: "Saving…", saved: "Attendance saved", allPresent: "Mark all present",
+  empty: "No active students in this section", noSections: "No assigned classes available",
+  choose: "Choose a class and date to open the register.", roll: "Roll", note: "Note (optional)",
+  reason: "Reason for past attendance", reasonHint: "A reason is required when saving a past date.",
+  past: "You can view this date. Permission to correct past attendance is required to save.",
+  unmarked: "Not marked", pending: "Choose a status for every student before saving.",
+  currentRoster: "This register uses the current academic year's active students.",
+  viewOnly: "You have view-only access to this register.", month: "Month", view: "View",
+  noChildren: "No children are linked to your account. Contact the school office.",
+  noRecords: "No attendance recorded for this month.", recorded: "Recorded days",
+  percentage: "Attendance rate (present + late / recorded days)",
+  dirty: "You have unsaved attendance changes. Leave this page?",
+  statuses: { present: "Present", absent: "Absent", late: "Late", excused: "Excused" },
+  errors: {
+    invalid: "Check the class, date and attendance entries.", permission: "You do not have permission to save this register.",
+    reason: "Enter a reason of at least 3 characters for a past date.",
+    conflict: "Another person updated this register. Reload the page before saving again.",
+    save: "Attendance could not be saved. Your selections are kept; please try again.",
+  },
+};
+type Labels = typeof en;
+const bn: Labels = {
+  title: "হাজিরা", section: "শ্রেণি / শাখা", date: "তারিখ", open: "হাজিরা খুলুন",
+  save: "হাজিরা সংরক্ষণ করুন", saving: "সংরক্ষণ হচ্ছে…", saved: "হাজিরা সংরক্ষিত হয়েছে", allPresent: "সবাইকে উপস্থিত করুন",
+  empty: "এই শাখায় কোনো সক্রিয় শিক্ষার্থী নেই", noSections: "কোনো নির্ধারিত শ্রেণি নেই",
+  choose: "হাজিরা খুলতে শ্রেণি ও তারিখ বেছে নিন।", roll: "রোল", note: "মন্তব্য (ঐচ্ছিক)",
+  reason: "আগের তারিখের হাজিরার কারণ", reasonHint: "আগের তারিখে সংরক্ষণ করতে কারণ লিখতে হবে।",
+  past: "এই তারিখের হাজিরা দেখতে পারবেন। সংরক্ষণ করতে আগের হাজিরা সংশোধনের অনুমতি প্রয়োজন।",
+  unmarked: "দেওয়া হয়নি", pending: "সংরক্ষণের আগে প্রত্যেক শিক্ষার্থীর হাজিরা বেছে নিন।",
+  currentRoster: "এই তালিকায় বর্তমান শিক্ষাবর্ষের সক্রিয় শিক্ষার্থীরা রয়েছে।",
+  viewOnly: "আপনি এই হাজিরা শুধু দেখতে পারবেন।", month: "মাস", view: "দেখুন",
+  noChildren: "আপনার অ্যাকাউন্টে কোনো সন্তান যুক্ত নেই। স্কুল অফিসে যোগাযোগ করুন।",
+  noRecords: "এই মাসে কোনো হাজিরা সংরক্ষণ করা হয়নি।", recorded: "সংরক্ষিত দিন",
+  percentage: "উপস্থিতির হার (উপস্থিত + দেরি / সংরক্ষিত দিন)",
+  dirty: "হাজিরার পরিবর্তন সংরক্ষণ হয়নি। এই পৃষ্ঠা ছেড়ে যাবেন?",
+  statuses: { present: "উপস্থিত", absent: "অনুপস্থিত", late: "দেরি", excused: "অনুমোদিত ছুটি" },
+  errors: {
+    invalid: "শ্রেণি, তারিখ ও হাজিরার তথ্য যাচাই করুন।", permission: "এই হাজিরা সংরক্ষণের অনুমতি নেই।",
+    reason: "আগের তারিখের জন্য অন্তত ৩ অক্ষরের কারণ লিখুন।",
+    conflict: "অন্য কেউ হাজিরা বদলেছেন। পৃষ্ঠা আবার খুলে সংরক্ষণ করুন।",
+    save: "হাজিরা সংরক্ষণ হয়নি। আপনার তথ্য রাখা আছে; আবার চেষ্টা করুন।",
+  },
+};
+export function attendanceLabels(locale: "bn" | "en") { return locale === "bn" ? bn : en; }
