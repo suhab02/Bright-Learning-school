@@ -21,13 +21,17 @@ async function EditStudent({ params }: { params: Promise<{ id: string }> }) {
   return (
     <div>
       <PageHeader title={t.students.edit} subtitle={st.full_name_bn || st.full_name_en} back={`/students/${id}`} />
-      <StudentForm action={updateStudent.bind(null, id)} sections={sections} mode="edit" today={dhakaToday()}
+      <StudentForm action={updateStudent.bind(null, id)} sections={sections} mode="edit" today={dhakaToday()} editGuardian={can(ctx, "guardians.manage")}
         initial={{
           full_name_bn: st.full_name_bn ?? "", full_name_en: st.full_name_en, date_of_birth: st.date_of_birth ?? "",
           gender: st.gender ?? "", blood_group: st.blood_group ?? "", admission_date: st.admission_date,
           admission_no: st.admission_no ?? "", section_id: st.section_id ?? "", roll_no: st.roll_no ? String(st.roll_no) : "",
           address: st.address ?? "", emergency_contact_name: st.emergency_contact_name ?? "",
           emergency_contact_phone: st.emergency_contact_phone ?? "",
+          guardian_name: st.guardians[0]?.full_name ?? "",
+          guardian_phone: st.guardians[0]?.phone ?? "",
+          guardian_email: st.guardians[0]?.email ?? "",
+          guardian_relationship: st.guardians[0]?.relationship ?? "father",
         }} />
     </div>
   );

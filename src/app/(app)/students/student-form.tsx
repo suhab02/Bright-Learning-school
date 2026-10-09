@@ -25,9 +25,9 @@ function Group({ icon, tint, title, children }: { icon: typeof UserRound; tint: 
   );
 }
 
-export function StudentForm({ action, sections, initial = {}, requestId, mode, today, schoolId }: {
+export function StudentForm({ action, sections, initial = {}, requestId, mode, today, schoolId, editGuardian = false }: {
   action: (s: StudentFormState, fd: FormData) => Promise<StudentFormState>;
-  sections: SectionOption[]; initial?: StudentInitial; requestId?: string; mode: "new" | "edit"; today: string; schoolId?: string;
+  sections: SectionOption[]; initial?: StudentInitial; requestId?: string; mode: "new" | "edit"; today: string; schoolId?: string; editGuardian?: boolean;
 }) {
   const { t, locale } = useT();
   const s = t.students;
@@ -99,8 +99,9 @@ export function StudentForm({ action, sections, initial = {}, requestId, mode, t
         <p className="-mt-2 px-1 text-xs text-ink-2">{s.rollHint}</p>
       </Group>
 
-      {mode === "new" && (
+      {(mode === "new" || editGuardian) && (
         <Group icon={Users} tint="violet" title={s.guardianTitle}>
+          {mode === "edit" && <p className="text-sm text-ink-2">{locale === "bn" ? "প্রধান অভিভাবকের তথ্য যোগ বা সম্পাদনা করুন। একই অভিভাবকের অন্য সন্তান থাকলে যোগাযোগের তথ্য তাদের ক্ষেত্রেও পরিবর্তন হবে। সব ঘর খালি করলে অভিভাবক মুছে যাবে না।" : "Add or edit the primary guardian. Contact changes also apply to their other linked children. Leaving all fields blank does not remove the guardian."}</p>}
           <Field label={s.guardianName} htmlFor="guardian_name">
             <Input id="guardian_name" name="guardian_name" defaultValue={v("guardian_name")} autoComplete="off" />
           </Field>

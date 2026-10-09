@@ -78,7 +78,7 @@ export async function updateStudent(id: string, _: StudentFormState, fd: FormDat
   const p = parse(fd);
   if ("fieldErrors" in p) return { ok: false, fieldErrors: p.fieldErrors, values: valuesOf(fd) };
   const supabase = await supabaseServer();
-  const { error } = await supabase.rpc("update_student", { p_id: id, p: p.data });
+  const { error } = await supabase.rpc(fd.has("guardian_name") ? "update_student_with_guardian" : "update_student", { p_id: id, p: p.data });
   if (error) return { ...dbError(error.message), values: valuesOf(fd) };
   redirect(`/students/${id}?saved=1`);
 }
