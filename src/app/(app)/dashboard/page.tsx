@@ -39,15 +39,15 @@ async function Dashboard() {
   const today = dhakaToday();
   const finance = can(ctx, "reports.view");
 
-  const [countsRes, dayRes, monthRes, yearRes, seriesRes, feeRes] = await Promise.all([
+  const [countsRes, dayRes, monthRes, yearRes, seriesRes, feeRes, { data: me }] = await Promise.all([
     supabase.rpc("dashboard_counts", { p_school: ctx.schoolId }),
     finance ? supabase.rpc("finance_summary", { p_school: ctx.schoolId, p_from: today, p_to: today }) : null,
     finance ? supabase.rpc("finance_summary", { p_school: ctx.schoolId, p_from: monthStart(today), p_to: today }) : null,
     finance ? supabase.rpc("finance_summary", { p_school: ctx.schoolId, p_from: yearStart(today), p_to: today }) : null,
     finance ? supabase.rpc("monthly_income_expense", { p_school: ctx.schoolId, p_from: monthsBack(today, 11), p_to: today }) : null,
     supabase.from("fee_structures").select("id", { count: "exact", head: true }).eq("school_id", ctx.schoolId),
+    supabase.from("profiles").select("full_name").eq("id", ctx.userId).maybeSingle(),
   ]);
-  const { data: me } = await supabase.from("profiles").select("full_name").eq("id", ctx.userId).maybeSingle();
   const displayName = me?.full_name || ctx.email?.split("@")[0] || "";
   if (countsRes.error) throw countsRes.error;
   const c = countsRes.data as Counts;

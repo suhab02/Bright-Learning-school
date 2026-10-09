@@ -52,7 +52,9 @@ Bangladesh's optional-subject or board-specific GPA rules have been implemented.
 
 Authenticated Realtime signals refresh student, attendance, fee, notice, notification,
 expense, homework and result screens. Refreshes pause while forms contain unsaved edits.
-Returning to the app also refreshes idle screens. This needs a working Realtime connection;
+Returning to the app refreshes idle screens after 30 seconds. Change signals are batched
+to at most one refresh every five seconds; initial subscription and successful server
+actions do not force an extra reload. This needs a working Realtime connection;
 no offline writes or background synchronization are promised. Deletes are intentionally not
 subscribed to; reopen a screen after removing a timetable lesson or assignment.
 

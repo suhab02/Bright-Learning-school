@@ -12,8 +12,10 @@ import { LiveUpdates } from "@/components/live-updates";
 
 async function Shell({ children }: { children: React.ReactNode }) {
   const ctx = await requireContext();
-  const [{ locale, t }, school, supabase] = await Promise.all([getT(), getSchool(ctx.schoolId), supabaseServer()]);
-  const [{ data: year }, { count: unread }, { data: profile }] = await Promise.all([
+  const supabase = await supabaseServer();
+  const [{ locale, t }, school, { data: year }, { count: unread }, { data: profile }] = await Promise.all([
+    getT(),
+    getSchool(ctx.schoolId),
     supabase.from("academic_years").select("name").eq("school_id", ctx.schoolId).eq("is_current", true).maybeSingle(),
     supabase.from("notifications").select("id", { count: "exact", head: true }).is("read_at", null),
     supabase.from("profiles").select("full_name").eq("id", ctx.userId).maybeSingle(),

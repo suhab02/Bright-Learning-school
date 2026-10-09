@@ -40,10 +40,15 @@ async function tryBootstrap(userId: string, email: string | null | undefined, ve
 /** Reads the session once per request. Returns null when signed out. */
 export const getContext = cache(async (): Promise<AppContext | "no-access" | null> => {
   const supabase = await supabaseServer();
-  const { data: { user } } = await supabase.auth.getUser(); // validated with Supabase, not just decoded
+  // Independent reads can overlap; never return context before Auth validates the user.
+  const [userResult, contextResult] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase.rpc("my_context"),
+  ]);
+  const { data: { user } } = userResult;
   if (!user) return null;
 
-  let { data } = await supabase.rpc("my_context");
+  let { data } = contextResult;
   let raw = data as RawCtx | null;
   if (!raw?.school_id) {
     const verified = Boolean(user.email_confirmed_at);
