@@ -2,7 +2,7 @@
 import { use, useState } from "react";
 import Link from "next/link";
 import { Button, Card, Field, Input, Notice } from "@/components/ui";
-import { supabaseBrowser } from "@/lib/supabase/client";
+import { supabaseEmailLinks } from "@/lib/supabase/client";
 import { useT } from "@/lib/i18n/client";
 import { safeNext } from "@/lib/safe-next";
 import { GoogleButton } from "../google-button";
@@ -17,12 +17,12 @@ export function SignupForm({ searchParams }: { searchParams: Promise<Record<stri
     e.preventDefault();
     const f = new FormData(e.currentTarget);
     setState("busy");
-    const { error } = await supabaseBrowser().auth.signUp({
+    const { error } = await supabaseEmailLinks().auth.signUp({
       email: String(f.get("email")).trim(),
       password: String(f.get("password")),
       options: {
         data: { full_name: String(f.get("full_name")).trim() },
-        emailRedirectTo: `${location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
+        emailRedirectTo: `${location.origin}/auth/complete?next=${encodeURIComponent(next)}`,
       },
     });
     setState(error ? "error" : "sent");
