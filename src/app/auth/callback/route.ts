@@ -12,5 +12,7 @@ export async function GET(request: NextRequest) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) return NextResponse.redirect(new URL(next, url.origin));
   }
-  return NextResponse.redirect(new URL("/login?error=callback", url.origin));
+  // Usually an email link opened on another device/browser: the email IS confirmed,
+  // but the one-time login can't complete there. Ask the person to sign in normally.
+  return NextResponse.redirect(new URL("/login?notice=link", url.origin));
 }

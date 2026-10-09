@@ -36,6 +36,7 @@ const en = {
     passwordUpdated: "Password updated. You're signed in.",
     invalidCredentials: "Email or password is incorrect.",
     emailNotConfirmed: "Confirm your email first — check your inbox for the link.",
+    linkOpened: "Your email link worked. If your email is now confirmed, sign in below with your email and password.",
     passwordRule: "At least 8 characters.",
     noAccessTitle: "Your account isn't linked to the school yet",
     noAccessBody: "Ask the school office to send you an invitation, then open the link in that email.",
