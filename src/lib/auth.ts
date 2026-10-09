@@ -47,10 +47,10 @@ export const getContext = cache(async (): Promise<AppContext | "no-access" | nul
   let raw = data as RawCtx | null;
   if (!raw?.school_id) {
     const verified = Boolean(user.email_confirmed_at);
-    if (await tryBootstrap(user.id, user.email, verified)) {
-      ({ data } = await supabase.rpc("my_context"));
-      raw = data as RawCtx | null;
-    }
+    // Re-read even if our attempt lost a race with a concurrent request that bootstrapped first.
+    await tryBootstrap(user.id, user.email, verified);
+    ({ data } = await supabase.rpc("my_context"));
+    raw = data as RawCtx | null;
   }
   if (!raw?.school_id || !raw.role) return "no-access";
   return {

@@ -4,7 +4,7 @@ import { CalendarCheck, HandCoins, Megaphone, Plus, ChartColumn, Wallet, CircleC
 import { can, requireContext, type AppContext } from "@/lib/auth";
 import { getT } from "@/lib/i18n/server";
 import { supabaseServer } from "@/lib/supabase/server";
-import { getSchool, schoolName, schoolPlace } from "@/lib/data/school";
+import { getSchool } from "@/lib/data/school";
 import { dhakaHour, dhakaToday, formatDate, formatNumber, formatTaka } from "@/lib/format";
 import { Card, Skeleton } from "@/components/ui";
 import { IncomeExpenseChart, type MonthPoint } from "@/components/charts/income-expense";
@@ -45,6 +45,8 @@ async function Dashboard() {
     finance ? supabase.rpc("monthly_income_expense", { p_school: ctx.schoolId, p_from: monthsBack(today, 11), p_to: today }) : null,
     supabase.from("fee_structures").select("id", { count: "exact", head: true }).eq("school_id", ctx.schoolId),
   ]);
+  const { data: me } = await supabase.from("profiles").select("full_name").eq("id", ctx.userId).maybeSingle();
+  const displayName = me?.full_name || ctx.email?.split("@")[0] || "";
   if (countsRes.error) throw countsRes.error;
   const c = countsRes.data as Counts;
   const day = dayRes?.data as Summary | undefined;
@@ -65,7 +67,7 @@ async function Dashboard() {
   const hasSeries = series.some((s) => s.collected > 0 || s.expenses > 0);
 
   const setup = ctx.role === "super_admin" ? [
-    { done: Boolean(school.logo_path && school.phone), label: t.dashboard.setupProfile, href: "/settings" },
+    { done: Boolean(school.phone && school.head_teacher_name), label: t.dashboard.setupProfile, href: "/settings" },
     { done: (feeRes.count ?? 0) > 0, label: t.dashboard.setupFees, href: "/fees" },
     { done: c.staff > 0, label: t.dashboard.setupStaff, href: "/staff" },
     { done: c.students_total > 0, label: t.dashboard.setupStudents, href: "/students" },
@@ -73,13 +75,15 @@ async function Dashboard() {
   const setupOpen = setup.some((s) => !s.done);
 
   return (
-    <div className="mx-auto max-w-7xl space-y-6">
-      {/* Identity band: the one decorated element on the page */}
-      <section className="relative overflow-hidden rounded-3xl bg-brand px-5 py-6 text-white sm:px-8 sm:py-8">
-        <p className="text-white/80">{greeting}</p>
-        <h1 className="mt-1 text-2xl font-bold leading-tight sm:text-3xl">{schoolName(school, locale)}</h1>
-        <p className="mt-1 text-sm text-white/70">{schoolPlace(school)}</p>
-        <div className="stitch my-4 w-48 text-due/90" aria-hidden />
+    <div className="space-y-6">
+      <h1 className="sr-only">{t.nav.dashboard}</h1>
+      {/* Greeting band with the school crest */}
+      <section className="relative overflow-hidden rounded-3xl bg-brand px-5 py-5 text-white">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={school.logoUrl} alt="" aria-hidden className="pointer-events-none absolute -right-6 -bottom-8 size-36 opacity-15" />
+        <p className="text-white/80">{greeting},</p>
+        <p className="mt-0.5 text-2xl font-bold leading-tight">{displayName}</p>
+        <div className="stitch my-3 w-40 text-sun" aria-hidden />
         <p className="text-sm text-white/85">{t.dashboard.today}: {formatDate(today, locale, bn)}</p>
       </section>
 
@@ -87,7 +91,7 @@ async function Dashboard() {
         <Card className="p-5">
           <h2 className="font-semibold">{t.dashboard.setupTitle}</h2>
           <p className="mt-1 text-sm text-ink-2">{t.dashboard.setupBody}</p>
-          <ol className="mt-4 grid gap-2 sm:grid-cols-2">
+          <ol className="mt-4 grid gap-2">
             {setup.map((s) => (
               <li key={s.href}>
                 <Link href={s.href} className="flex items-center gap-3 rounded-xl border border-line px-3 py-3 hover:bg-surface-2">
@@ -100,9 +104,9 @@ async function Dashboard() {
         </Card>
       )}
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <div className="grid gap-4">
         {/* Today */}
-        <Card className="p-5 lg:col-span-1">
+        <Card className="p-5">
           <h2 className="font-semibold">{t.dashboard.today}</h2>
           {c.marked_today === 0 ? (
             <p className="mt-3 text-ink-2">{t.dashboard.attendanceNotTaken}</p>
@@ -128,8 +132,8 @@ async function Dashboard() {
 
         {/* Money */}
         {finance && (
-          <Card className="p-5 lg:col-span-2">
-            <div className="grid gap-5 sm:grid-cols-2">
+          <Card className="p-5">
+            <div className="grid grid-cols-2 gap-5">
               <Metric label={t.dashboard.collectedMonth} value={money(month?.collected_gross)} />
               <Metric label={t.dashboard.collectedYear} value={money(year?.collected_gross)} />
               <Metric label={t.dashboard.outstanding} value={money(month?.outstanding_now)} tone="due"
@@ -147,7 +151,7 @@ async function Dashboard() {
       </div>
 
       {/* People */}
-      <Card className="grid grid-cols-2 divide-line p-0 sm:grid-cols-4 sm:divide-x">
+      <Card className="grid grid-cols-2 divide-line p-0">
         <People label={t.dashboard.students} value={n(c.students_active)} />
         <People label={t.dashboard.admissions} value={n(c.admissions_this_year)} />
         <People label={t.dashboard.staff} value={n(c.staff)} />
@@ -198,10 +202,10 @@ function QuickActions({ ctx, t, pendingExpenses, n }: { ctx: AppContext; t: Dict
   return (
     <section>
       <h2 className="mb-3 font-semibold">{t.dashboard.quickActions}</h2>
-      <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
+      <div className="grid grid-cols-3 gap-2">
         {items.map(({ href, label, Icon }) => (
           <Link key={href} href={href} className="flex flex-col items-center gap-2 rounded-2xl bg-surface border border-line px-2 py-4 text-center text-sm hover:border-accent">
-            <span className="grid size-11 place-items-center rounded-full bg-sky text-brand"><Icon className="size-5" aria-hidden /></span>
+            <span className="grid size-11 place-items-center rounded-full bg-sky text-brand dark:text-accent"><Icon className="size-5" aria-hidden /></span>
             {label}
           </Link>
         ))}
@@ -217,7 +221,7 @@ function QuickActions({ ctx, t, pendingExpenses, n }: { ctx: AppContext; t: Dict
 
 export default function Page() {
   return (
-    <Suspense fallback={<div className="mx-auto max-w-7xl space-y-6"><Skeleton className="h-44" /><Skeleton className="h-48" /><Skeleton className="h-24" /></div>}>
+    <Suspense fallback={<div className="space-y-6"><Skeleton className="h-44" /><Skeleton className="h-48" /><Skeleton className="h-24" /></div>}>
       <Dashboard />
     </Suspense>
   );

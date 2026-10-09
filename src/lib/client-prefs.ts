@@ -26,11 +26,3 @@ export function applyTheme(v: Theme) {
   const dark = v === "dark" || (v === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
   document.documentElement.classList.toggle("dark", dark);
 }
-
-export function readSidebarCollapsed(): boolean {
-  try { return localStorage.getItem("bls_sidebar") === "1"; } catch { return false; }
-}
-export function writeSidebarCollapsed(v: boolean) {
-  try { localStorage.setItem("bls_sidebar", v ? "1" : "0"); } catch { /* storage unavailable */ }
-  emit();
-}

@@ -5,6 +5,7 @@ import { LocaleProvider } from "@/lib/i18n/client";
 import { supabaseServer } from "@/lib/supabase/server";
 import { getSchool, isHexColor, schoolName, schoolPlace } from "@/lib/data/school";
 import { bottomNav, visibleNav } from "@/lib/nav";
+import { toBnDigits } from "@/lib/format";
 import { AppShell } from "@/components/app-shell";
 import { Skeleton } from "@/components/ui";
 
@@ -17,7 +18,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
     supabase.from("profiles").select("full_name").eq("id", ctx.userId).maybeSingle(),
   ]);
   const nav = visibleNav(ctx.role, [...ctx.permissions]);
-  const brand = isHexColor(school.primary_color) ? school.primary_color : "#17356B";
+  const brand = isHexColor(school.primary_color) ? school.primary_color : "#114364";
 
   return (
     <LocaleProvider locale={locale}>
@@ -25,7 +26,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
         <AppShell
           school={{ name: schoolName(school, locale), place: schoolPlace(school), logoUrl: school.logoUrl }}
           user={{ name: profile?.full_name || ctx.email || "", email: ctx.email ?? "", role: t.roles[ctx.role] }}
-          yearName={year?.name ?? null}
+          yearName={year?.name ? (locale === "bn" && school.use_bengali_digits ? toBnDigits(year.name) : year.name) : null}
           nav={nav}
           bottom={bottomNav(ctx.role, nav)}
           unread={unread ?? 0}>

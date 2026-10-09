@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { supabaseServer } from "../supabase/server";
-import { logoPublicUrl } from "../school";
+import { DEFAULT_LOGO, logoPublicUrl } from "../school";
 
 export type SchoolRow = {
   id: string; name_bn: string; name_en: string; slogan_bn: string | null; slogan_en: string | null;
@@ -23,7 +23,7 @@ export const getSchool = cache(async (schoolId: string) => {
   const { data, error } = await supabase.from("schools").select("*").eq("id", schoolId).single();
   if (error) throw error;
   const s = data as SchoolRow;
-  return { ...s, logoUrl: logoPublicUrl(s.logo_path, s.updated_at) };
+  return { ...s, logoUrl: logoPublicUrl(s.logo_path, s.updated_at) ?? DEFAULT_LOGO, customLogo: Boolean(s.logo_path) };
 });
 
 export function schoolName(s: Pick<SchoolRow, "name_bn" | "name_en">, locale: "bn" | "en") {

@@ -1,4 +1,5 @@
 -- 0001_core.sql — schools, profiles, roles, permissions, invitations, audit
+-- On hosted Supabase pgcrypto already exists in the "extensions" schema; locally it lands in public.
 create extension if not exists pgcrypto;
 
 -- ───────────────────────── schools (all details editable) ─────────────────────────
@@ -28,7 +29,7 @@ create table public.schools (
   registration_no    text,
   logo_path          text,
   favicon_path       text,
-  primary_color      text not null default '#17356B' check (primary_color ~ '^#[0-9A-Fa-f]{6}$'),
+  primary_color      text not null default '#114364' check (primary_color ~ '^#[0-9A-Fa-f]{6}$'),
   theme              text not null default 'system' check (theme in ('light','dark','system')),
   default_locale     text not null default 'bn' check (default_locale in ('bn','en')),
   use_bengali_digits boolean not null default true,
@@ -277,7 +278,7 @@ revoke all on function public.bootstrap_owner(uuid, uuid) from public;
 create or replace function public.create_invitation(
   p_school uuid, p_email text, p_role text, p_permissions jsonb default '{}'::jsonb,
   p_guardian uuid default null, p_staff uuid default null)
-returns text language plpgsql security definer set search_path = public as $$
+returns text language plpgsql security definer set search_path = public, extensions as $$
 declare raw text := encode(gen_random_bytes(32), 'hex'); inv_id uuid;
 begin
   if p_role = 'guardian' then
@@ -306,7 +307,7 @@ end $$;
 
 -- accept: caller must be signed in with the invited email
 create or replace function public.accept_invitation(p_token text)
-returns uuid language plpgsql security definer set search_path = public as $$
+returns uuid language plpgsql security definer set search_path = public, extensions as $$
 declare inv invitations; user_email text; mem_id uuid; k text; v jsonb;
 begin
   select * into inv from invitations

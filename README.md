@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bright Learning School — school management app
 
-## Getting Started
+A Bengali/English **phone app** (installable PWA) for Bright Learning School, Mulagul,
+Kanaighat, Sylhet: one shared, secure database for the owner, office staff, accountants,
+teachers and guardians.
 
-First, run the development server:
+- **Setting it up online:** [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) (written for non-developers)
+- **How it's built and secured:** [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+
+## What works today
+
+| Area | Status |
+|---|---|
+| Database: all tables, constraints, Row Level Security, audit log | ✅ built and tested |
+| Money rules: atomic + idempotent payments, receipts, reversals, refunds, expenses with approval, reports | ✅ in the database, tested (screens not built yet) |
+| Sign-in: Google + email/password, verification, password reset, invitations, secure first-owner setup | ✅ built and tested |
+| Phone-app shell, বাংলা / English switch, light/dark theme, school crest | ✅ |
+| Dashboard with real figures and setup checklist | ✅ |
+| Settings: every school detail, logo, colour, receipt prefix, working days, fee options | ✅ |
+| In-app notifications page | ✅ |
+| PWA install (manifest, icons, safe service worker) | ✅ |
+| Students, guardians, teachers, attendance, homework, exams, fee collection, reports, staff permissions, guardian portal screens | ⏳ next phases — these sections say "not built yet" in the app |
+
+## Tests
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+PGHOST=/tmp PGPORT=54329 supabase/tests/run.sh   # 13 groups of security & money tests (PostgreSQL 16)
+supabase/local-stack/start.sh                      # local Supabase Auth + PostgREST (dev only)
+npm run build && npm start &  npx playwright test  # 8 end-to-end browser tests (desktop + phone)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Last run: all database tests and all 8 end-to-end tests passing. Not yet deployed to a real
+Supabase/Vercel project — that needs your accounts (see the deployment guide).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Known limitations
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Logo upload uses Supabase Storage; it was not exercised locally (no Storage server in the
+  test stack) and should be checked once on the real project.
+- Realtime updates are wired in the database but not yet in the screens.
+- Free hosting tiers have limits — read the box at the top of the deployment guide.

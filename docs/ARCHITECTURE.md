@@ -35,14 +35,14 @@ bright-school/
     tests/                 SQL tests: RLS isolation, payments, permissions
   src/
     app/
-      [locale]/            bn | en
-        (auth)/            login, signup, reset, accept-invite
-        (app)/             signed-in shell: sidebar + topbar + bottom nav
+      (auth)/              login, signup, reset (language from a cookie, so switching keeps your place)
+      (app)/               signed-in phone-app shell: top app bar + bottom tab bar + "More" sheet
           dashboard/ students/ guardians/ teachers/ attendance/ classes/
           homework/ exams/ fees/ payments/ expenses/ reports/ notices/
           staff/ settings/ onboarding/ help/
-        portal/            guardian mobile home
+        portal/            guardian home
       auth/callback/       OAuth / email-link callback
+      invite/[token]/      accept an invitation
     components/            ui primitives, layout, charts, forms
     lib/
       supabase/            browser + server + admin(service) clients
@@ -127,3 +127,14 @@ never cached by the service worker. Writes require a connection; the UI says so 
 - Academic year = calendar year (January–December), timezone Asia/Dhaka.
 - Default classes: Playgroup, Nursery, KG, Class 1–5 (editable, not hardcoded).
 - Default language Bengali; currency ৳ BDT.
+
+## 9. Phone-app design
+
+The whole interface is a phone app (max width 480px). On a computer the same app is shown
+centred — there is no separate desktop dashboard. Navigation: top app bar (school crest,
+name, notifications, profile/language/theme sheet) and a bottom tab bar with the four
+most-used sections for the person's role plus "More" for everything they're allowed to use.
+
+Branding: the Bright Learning School crest (`public/brand/logo.png`) is the default logo and
+app icon. Uploading a different logo in Settings replaces it in the app; colours default to the
+crest's navy `#114364` with its orange `#EE7C19` for decorative accents.

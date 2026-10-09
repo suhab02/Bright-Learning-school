@@ -24,7 +24,7 @@ async function List() {
     .order("created_at", { ascending: false }).limit(100);
   const rows = data ?? [];
   return (
-    <div className="mx-auto max-w-3xl space-y-4">
+    <div className="space-y-4">
       <div className="flex items-center justify-between gap-3">
         <h1 className="text-2xl font-bold">{t.common.notifications}</h1>
         {rows.some((r) => !r.read_at) && (
@@ -53,4 +53,4 @@ async function List() {
     </div>
   );
 }
-export default function Page() { return <Suspense fallback={<Skeleton className="mx-auto h-60 max-w-3xl" />}><List /></Suspense>; }
+export default function Page() { return <Suspense fallback={<Skeleton className="mx-auto h-60 " />}><List /></Suspense>; }

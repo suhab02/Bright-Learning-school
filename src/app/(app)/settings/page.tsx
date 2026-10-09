@@ -14,17 +14,17 @@ async function Settings() {
   if (ctx.role === "guardian") return <Notice tone="warn">{t.common.permissionDenied}</Notice>;
   const readOnly = !can(ctx, "settings.manage");
   return (
-    <div className="mx-auto max-w-4xl space-y-5">
+    <div className="space-y-5">
       <div>
         <h1 className="text-2xl font-bold">{t.settings.schoolProfile}</h1>
         <p className="text-ink-2">{t.settings.profileHint}</p>
       </div>
-      <LogoUpload schoolId={school.id} logoUrl={school.logoUrl} readOnly={readOnly} />
+      <LogoUpload schoolId={school.id} logoUrl={school.logoUrl} custom={school.customLogo} readOnly={readOnly} />
       <SchoolForm school={school} readOnly={readOnly} />
     </div>
   );
 }
 
 export default function Page() {
-  return <Suspense fallback={<div className="mx-auto max-w-4xl space-y-5"><Skeleton className="h-12 w-72" /><Skeleton className="h-32" /><Skeleton className="h-96" /></div>}><Settings /></Suspense>;
+  return <Suspense fallback={<div className="space-y-5"><Skeleton className="h-12 w-72" /><Skeleton className="h-32" /><Skeleton className="h-96" /></div>}><Settings /></Suspense>;
 }

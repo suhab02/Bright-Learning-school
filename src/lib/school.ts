@@ -6,10 +6,12 @@ import { SUPABASE_URL } from "./supabase/env";
 /** Public branding only (names, logo, colour). Safe to cache and show on the sign-in page. */
 export type PublicBranding = {
   nameBn: string; nameEn: string; sloganBn: string | null; sloganEn: string | null;
-  logoUrl: string | null; primaryColor: string; place: string;
+  logoUrl: string; primaryColor: string; place: string;
 };
 
 export const BRANDING_TAG = "school-branding";
+/** Bright Learning School crest, used until a different logo is uploaded in Settings. */
+export const DEFAULT_LOGO = "/brand/logo.png";
 
 export function logoPublicUrl(path: string | null | undefined, version?: string) {
   if (!path) return null;
@@ -30,7 +32,7 @@ export async function getPublicBranding(): Promise<PublicBranding | null> {
   if (!data) return null;
   return {
     nameBn: data.name_bn, nameEn: data.name_en, sloganBn: data.slogan_bn, sloganEn: data.slogan_en,
-    logoUrl: logoPublicUrl(data.logo_path, data.updated_at),
+    logoUrl: logoPublicUrl(data.logo_path, data.updated_at) ?? DEFAULT_LOGO,
     primaryColor: data.primary_color,
     place: [data.village_area, data.upazila, data.district].filter(Boolean).join(", "),
   };

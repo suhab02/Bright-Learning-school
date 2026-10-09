@@ -8,7 +8,7 @@ import { setLogo } from "./actions";
 
 const TYPES: Record<string, string> = { "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp", "image/svg+xml": "svg" };
 
-export function LogoUpload({ schoolId, logoUrl, readOnly }: { schoolId: string; logoUrl: string | null; readOnly: boolean }) {
+export function LogoUpload({ schoolId, logoUrl, custom, readOnly }: { schoolId: string; logoUrl: string; custom: boolean; readOnly: boolean }) {
   const { t } = useT();
   const input = useRef<HTMLInputElement>(null);
   const [pending, start] = useTransition();
@@ -28,12 +28,10 @@ export function LogoUpload({ schoolId, logoUrl, readOnly }: { schoolId: string; 
   }
 
   return (
-    <Card className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
+    <Card className="flex flex-col gap-4 p-5">
       <div className="grid size-24 shrink-0 place-items-center overflow-hidden rounded-2xl border border-line bg-surface-2">
-        {logoUrl
-          // eslint-disable-next-line @next/next/no-img-element
-          ? <img src={logoUrl} alt={t.settings.logo} className="size-full object-contain p-1" />
-          : <span className="text-xs text-ink-2">{t.common.notSet}</span>}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={logoUrl} alt={t.settings.logo} className="size-full object-contain p-1" />
       </div>
       <div className="flex-1">
         <h2 className="font-semibold">{t.settings.logo}</h2>
@@ -46,7 +44,7 @@ export function LogoUpload({ schoolId, logoUrl, readOnly }: { schoolId: string; 
             <Button type="button" variant="secondary" disabled={pending} onClick={() => input.current?.click()}>
               <Upload className="size-4" aria-hidden />{t.settings.uploadLogo}
             </Button>
-            {logoUrl && (
+            {custom && (
               <Button type="button" variant="ghost" disabled={pending} onClick={() => start(async () => { await setLogo(null); })}>
                 <Trash2 className="size-4" aria-hidden />{t.settings.removeLogo}
               </Button>

@@ -9,7 +9,8 @@
 
 /* Brand tokens. --brand is overridden at runtime from Settings → Branding. */
 :root {
-  --brand: #17356b;          /* primary navy */
+  --brand: #114364;          /* logo navy */
+  --sun: #ee7c19;            /* logo orange: decoration + badges */
   --accent: #168ce6;         /* modern blue */
   --sky: #eaf7ff;
   --paid: #20b66a;           /* emerald: paid / present only */
@@ -41,6 +42,7 @@
 @theme inline {
   --color-brand: var(--brand);
   --color-accent: var(--accent);
+  --color-sun: var(--sun);
   --color-sky: var(--sky);
   --color-paid: var(--paid);
   --color-due: var(--due);

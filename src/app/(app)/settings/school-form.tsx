@@ -42,7 +42,7 @@ export function SchoolForm({ school, readOnly }: { school: SchoolRow; readOnly: 
       <fieldset disabled={readOnly || pending} className="space-y-5">
         <Card className="p-5">
           <h2 className="font-semibold">{s.identity}</h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <div className="mt-4 grid gap-4">
             {text("name_bn", s.nameBn, { required: true })}
             {text("name_en", s.nameEn, { required: true })}
             {text("slogan_bn", s.sloganBn)}
@@ -50,7 +50,7 @@ export function SchoolForm({ school, readOnly }: { school: SchoolRow; readOnly: 
             {text("head_teacher_name", s.headTeacher)}
             {text("established_year", s.established, { inputMode: "numeric" })}
             {text("registration_no", s.registration)}
-            <Field label={s.description} htmlFor="description" className="sm:col-span-2">
+            <Field label={s.description} htmlFor="description">
               <Textarea id="description" name="description" defaultValue={school.description ?? ""} />
             </Field>
           </div>
@@ -58,15 +58,15 @@ export function SchoolForm({ school, readOnly }: { school: SchoolRow; readOnly: 
 
         <Card className="p-5">
           <h2 className="font-semibold">{s.location}</h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="sm:col-span-2 lg:col-span-3">{text("address_line", s.address)}</div>
+          <div className="mt-4 grid gap-4">
+            <div>{text("address_line", s.address)}</div>
             {text("village_area", s.village)}
             {text("union_name", s.union)}
             {text("upazila", s.upazila)}
             {text("district", s.district)}
             {text("division", s.division)}
             {text("postal_code", s.postalCode, { inputMode: "numeric" })}
-            <div className="sm:col-span-2 lg:col-span-3">{text("maps_url", s.mapsUrl, { type: "url", inputMode: "url" })}</div>
+            <div>{text("maps_url", s.mapsUrl, { type: "url", inputMode: "url" })}</div>
             {text("latitude", s.latitude, { inputMode: "decimal" })}
             {text("longitude", s.longitude, { inputMode: "decimal" })}
           </div>
@@ -74,7 +74,7 @@ export function SchoolForm({ school, readOnly }: { school: SchoolRow; readOnly: 
 
         <Card className="p-5">
           <h2 className="font-semibold">{s.contact}</h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <div className="mt-4 grid gap-4">
             {text("phone", s.phone, { type: "tel", inputMode: "tel" })}
             {text("whatsapp", s.whatsapp, { type: "tel", inputMode: "tel" })}
             {text("email", s.email, { type: "email", inputMode: "email" })}
@@ -84,7 +84,7 @@ export function SchoolForm({ school, readOnly }: { school: SchoolRow; readOnly: 
 
         <Card className="p-5">
           <h2 className="font-semibold">{s.branding}</h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <div className="mt-4 grid gap-4">
             <Field label={s.primaryColor} htmlFor="primary_color" error={err("primary_color")}>
               <div className="flex items-center gap-3">
                 <input id="primary_color" name="primary_color" type="color" value={color}
@@ -98,7 +98,7 @@ export function SchoolForm({ school, readOnly }: { school: SchoolRow; readOnly: 
                 <option value="bn">বাংলা</option><option value="en">English</option>
               </Select>
             </Field>
-            <label className="flex items-center gap-3 sm:col-span-2">
+            <label className="flex items-center gap-3">
               <input type="checkbox" name="use_bengali_digits" defaultChecked={school.use_bengali_digits} className="size-5 accent-[var(--brand)]" />
               {s.bengaliDigits}
             </label>
@@ -121,7 +121,7 @@ export function SchoolForm({ school, readOnly }: { school: SchoolRow; readOnly: 
               ))}
             </div>
           </fieldset>
-          <div className="mt-4 grid max-w-md grid-cols-2 gap-4">
+          <div className="mt-4 grid grid-cols-2 gap-4">
             <Field label={s.schoolHours} htmlFor="school_starts">
               <Input id="school_starts" name="school_starts" type="time" defaultValue={school.school_starts?.slice(0, 5) ?? "08:00"} />
             </Field>
@@ -133,7 +133,7 @@ export function SchoolForm({ school, readOnly }: { school: SchoolRow; readOnly: 
 
         <Card className="p-5">
           <h2 className="font-semibold">{s.feesSettings}</h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-3">
+          <div className="mt-4 grid gap-4">
             <Field label={s.dueDay} htmlFor="default_due_day" error={err("default_due_day")}>
               <Input id="default_due_day" name="default_due_day" type="number" min={1} max={28} defaultValue={school.default_due_day} />
             </Field>
@@ -144,7 +144,7 @@ export function SchoolForm({ school, readOnly }: { school: SchoolRow; readOnly: 
             <Field label={s.graceDays} htmlFor="late_fee_grace_days">
               <Input id="late_fee_grace_days" name="late_fee_grace_days" type="number" min={0} max={60} defaultValue={school.late_fee_grace_days} />
             </Field>
-            <label className="flex items-center gap-3 sm:col-span-3">
+            <label className="flex items-center gap-3">
               <input type="checkbox" name="late_fee_enabled" defaultChecked={school.late_fee_enabled} className="size-5 accent-[var(--brand)]" />
               {s.lateFeeEnabled}
             </label>
@@ -153,7 +153,7 @@ export function SchoolForm({ school, readOnly }: { school: SchoolRow; readOnly: 
       </fieldset>
 
       {!readOnly && (
-        <div className="sticky bottom-20 lg:bottom-4 z-20 flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-surface/95 p-3 backdrop-blur">
+        <div className="sticky bottom-20 z-20 flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-surface/95 p-3 backdrop-blur">
           <Button type="submit" size="lg" disabled={pending}>{pending ? t.common.saving : t.common.save}</Button>
           <div aria-live="polite" className="text-sm">
             {state?.ok && !dirty && <span className="text-paid">{t.common.saved}</span>}
