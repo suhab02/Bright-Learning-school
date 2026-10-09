@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Pencil, Phone, Users } from "lucide-react";
+import { Pencil, Phone, Users, Wallet } from "lucide-react";
 import { can, requireContext } from "@/lib/auth";
 import { getT } from "@/lib/i18n/server";
 import { getSchool } from "@/lib/data/school";
@@ -57,6 +57,14 @@ async function Profile({ params, searchParams }: { params: Promise<{ id: string 
           <Chip tint={st.status === "active" ? "green" : "rose"}>{s.status[st.status as keyof typeof s.status] ?? st.status}</Chip>
         </div>
       </Card>
+
+      {(can(ctx, "fees.view") || can(ctx, "fees.collect")) && (
+        <Link href={`/fees/student/${st.id}`} className="press mt-3 flex items-center gap-3 rounded-[22px] bg-surface p-4 card-shadow">
+          <span className="grid size-11 place-items-center rounded-2xl tint-green"><Wallet className="size-5" /></span>
+          <span className="flex-1 font-semibold">{t.nav.fees}</span>
+          <span aria-hidden className="text-ink-2/50">›</span>
+        </Link>
+      )}
 
       <SectionTitle>{s.guardians}</SectionTitle>
       <Card className="overflow-hidden">

@@ -132,6 +132,11 @@ html[lang="bn"] body { font-family: var(--font-bn); line-height: 1.6; }
 }
 
 @media print {
+  @page { size: A5; margin: 10mm; }
   .no-print { display: none !important; }
-  body { background: white; }
+  html, body { background: white !important; }
+  main { padding: 0 !important; }
+  .print-sheet { box-shadow: none !important; border: 1px solid #d5dbe3; border-radius: 12px; }
+  .print-sheet * { color: #0f1f36 !important; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
