@@ -12,6 +12,8 @@ import { Avatar, Chip, EmptyState, ListRow, PageHeader, SectionTitle } from "@/c
 import { StatusControl } from "./status-control";
 import { ProfilePhoto } from "../photo-picker";
 import { photoUrls } from "@/lib/data/photos";
+import { AdminDelete } from "@/components/admin-delete";
+import { GuardianMessage } from "@/components/guardian-message";
 
 export const metadata = { title: "Student" };
 
@@ -82,6 +84,7 @@ async function Profile({ params, searchParams }: { params: Promise<{ id: string 
                     <a href={`tel:${g.phone}`} aria-label={`${s.call} ${g.full_name}`}
                       className="press grid size-11 place-items-center rounded-2xl tint-green"><Phone className="size-5" /></a>
                   ) : undefined} />
+                {(can(ctx,"guardians.manage") || ctx.role === "teacher") && <div className="px-4 pb-3"><GuardianMessage name={g.full_name} phone={g.phone ?? ""} /></div>}
               </li>
             ))}
           </ul>
@@ -112,7 +115,7 @@ async function Profile({ params, searchParams }: { params: Promise<{ id: string 
         </dl>
       </Card>
 
-      {can(ctx, "students.archive") && <div className="mt-6"><StatusControl id={st.id} status={st.status} /></div>}
+      {(ctx.role === "admin" || ctx.role === "super_admin") && <div className="mt-6"><AdminDelete table="students" id={st.id} name={name} />{can(ctx,"students.archive") && <StatusControl id={st.id} status={st.status} />}</div>}
     </div>
   );
 }

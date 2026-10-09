@@ -4,6 +4,7 @@ import { getT } from "@/lib/i18n/server";
 import { requireContext } from "@/lib/auth";
 import { Card, Skeleton } from "@/components/ui";
 import { PageHeader } from "@/components/page";
+import { RoleAccessGuide } from "@/components/role-access-guide";
 async function Help() {
   const ctx = await requireContext();
   const { locale, t } = await getT();
@@ -11,6 +12,7 @@ async function Help() {
   return (
     <div>
       <PageHeader title={t.nav.help} />
+      <RoleAccessGuide />
       <Card className="space-y-4 p-4">
         <p>
           {L(

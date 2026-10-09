@@ -84,7 +84,7 @@ export async function updateStudent(id: string, _: StudentFormState, fd: FormDat
 }
 
 export async function setStudentStatus(id: string, _: StudentFormState, fd: FormData): Promise<StudentFormState> {
-  try { await requirePermission("students.archive"); } catch { return { ok: false, error: "permission" }; }
+  try { const ctx = await requirePermission("students.archive"); if (ctx.role !== "admin" && ctx.role !== "super_admin") return { ok:false,error:"permission" }; } catch { return { ok: false, error: "permission" }; }
   const status = String(fd.get("status") ?? "");
   const reason = String(fd.get("reason") ?? "").trim().slice(0, 300);
   if (!["active", "withdrawn", "transferred", "graduated"].includes(status)) return { ok: false, error: "save" };
