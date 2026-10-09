@@ -19,7 +19,7 @@ async function NewStudent() {
   return (
     <div>
       <PageHeader title={t.students.add} back="/students" />
-      <StudentForm action={admitStudent} sections={sections} requestId={requestId} mode="new" today={dhakaToday()} />
+      <StudentForm action={admitStudent} sections={sections} requestId={requestId} mode="new" today={dhakaToday()} schoolId={ctx.schoolId} />
     </div>
   );
 }

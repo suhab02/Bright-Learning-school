@@ -11,6 +11,7 @@ import { Card, Notice, Skeleton } from "@/components/ui";
 import { Avatar, Chip, EmptyState, IconChip, ListRow, PageHeader, SectionTitle, Tile } from "@/components/page";
 import { SearchBox } from "../students/search-box";
 import { BillMonth } from "./bill-month";
+import { photoUrls } from "@/lib/data/photos";
 
 export const metadata = { title: "Fees" };
 
@@ -33,6 +34,7 @@ async function Fees({ searchParams }: { searchParams: Promise<Record<string, str
     q ? listStudents({ q }) : null,
   ]);
 
+  const photos = await photoUrls([...(dues ?? []).map((d) => d.student.photo_path), ...(found?.rows ?? []).map((r) => r.photo_path)]);
   return (
     <div>
       <PageHeader title={f.title} />
@@ -73,7 +75,7 @@ async function Fees({ searchParams }: { searchParams: Promise<Record<string, str
             <ul className="divide-y divide-line/70">
               {found.rows.map((r) => (
                 <li key={r.id}>
-                  <ListRow href={`/fees/student/${r.id}`} leading={<Avatar name={displayName(r, locale)} id={r.id} />}
+                  <ListRow href={`/fees/student/${r.id}`} leading={<Avatar name={displayName(r, locale)} id={r.id} src={r.photo_path ? photos[r.photo_path] : null} />}
                     title={displayName(r, locale)}
                     subtitle={[className(r, locale), r.roll_no && `${t.students.roll} ${formatNumber(r.roll_no, bn)}`].filter(Boolean).join(" · ")} />
                 </li>
@@ -90,7 +92,7 @@ async function Fees({ searchParams }: { searchParams: Promise<Record<string, str
                 {dues.map((d) => (
                   <li key={d.student_id}>
                     <ListRow href={`/fees/student/${d.student_id}`}
-                      leading={<Avatar name={displayName(d.student, locale)} id={d.student_id} />}
+                      leading={<Avatar name={displayName(d.student, locale)} id={d.student_id} src={d.student.photo_path ? photos[d.student.photo_path] : null} />}
                       title={displayName(d.student, locale)}
                       subtitle={[className(d.student, locale), d.student.roll_no && `${t.students.roll} ${formatNumber(d.student.roll_no, bn)}`].filter(Boolean).join(" · ")}
                       trailing={<Chip tint={d.overdue > 0 ? "rose" : "amber"} className="num">{money(d.outstanding)}</Chip>} />

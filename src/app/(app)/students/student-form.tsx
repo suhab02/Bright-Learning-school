@@ -6,6 +6,7 @@ import { IconChip, type Tint } from "@/components/page";
 import { useT } from "@/lib/i18n/client";
 import type { SectionOption } from "@/lib/data/students";
 import type { StudentFormState } from "./actions";
+import { AdmissionPhoto } from "./photo-picker";
 
 export type StudentInitial = Partial<Record<
   "full_name_bn" | "full_name_en" | "date_of_birth" | "gender" | "blood_group" | "admission_date" | "admission_no" |
@@ -24,9 +25,9 @@ function Group({ icon, tint, title, children }: { icon: typeof UserRound; tint: 
   );
 }
 
-export function StudentForm({ action, sections, initial = {}, requestId, mode, today }: {
+export function StudentForm({ action, sections, initial = {}, requestId, mode, today, schoolId }: {
   action: (s: StudentFormState, fd: FormData) => Promise<StudentFormState>;
-  sections: SectionOption[]; initial?: StudentInitial; requestId?: string; mode: "new" | "edit"; today: string;
+  sections: SectionOption[]; initial?: StudentInitial; requestId?: string; mode: "new" | "edit"; today: string; schoolId?: string;
 }) {
   const { t, locale } = useT();
   const s = t.students;
@@ -46,6 +47,7 @@ export function StudentForm({ action, sections, initial = {}, requestId, mode, t
       {requestId && <input type="hidden" name="request_id" value={requestId} />}
 
       <Group icon={UserRound} tint="orange" title={s.studentDetails}>
+        {mode === "new" && schoolId && <AdmissionPhoto schoolId={schoolId} initialPath={state?.values?.photo_path} />}
         <Field label={s.nameBn} htmlFor="full_name_bn" error={err("full_name_bn")} hint={s.nameHint}>
           <Input id="full_name_bn" name="full_name_bn" defaultValue={v("full_name_bn")} lang="bn" autoComplete="off" aria-invalid={!!err("full_name_bn")} />
         </Field>

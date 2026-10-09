@@ -10,6 +10,8 @@ import { formatDate, formatNumber, toBnDigits } from "@/lib/format";
 import { Card, Notice, Skeleton } from "@/components/ui";
 import { Avatar, Chip, EmptyState, ListRow, PageHeader, SectionTitle } from "@/components/page";
 import { StatusControl } from "./status-control";
+import { ProfilePhoto } from "../photo-picker";
+import { photoUrls } from "@/lib/data/photos";
 
 export const metadata = { title: "Student" };
 
@@ -19,6 +21,7 @@ async function Profile({ params, searchParams }: { params: Promise<{ id: string 
   if (!/^[0-9a-f-]{36}$/.test(id)) notFound();
   const st = await getStudent(id);
   if (!st) notFound();
+  const photos = await photoUrls([st.photo_path]);
   const bn = { bnDigits: locale === "bn" && school.use_bengali_digits };
   const digits = (v: string) => (bn.bnDigits ? toBnDigits(v) : v);
   const s = t.students;
@@ -48,7 +51,8 @@ async function Profile({ params, searchParams }: { params: Promise<{ id: string 
       {st.status !== "active" && <Notice tone="warn" className="mb-4">{s.leftNotice}</Notice>}
 
       <Card className="rise flex flex-col items-center px-5 pb-6 pt-7 text-center">
-        <Avatar name={name} id={st.id} size={84} className="rounded-[28px]" />
+        <ProfilePhoto studentId={st.id} schoolId={ctx.schoolId} name={name} canEdit={can(ctx, "students.edit")}
+          src={st.photo_path ? photos[st.photo_path] ?? null : null} />
         <h2 className="mt-4 text-[22px] font-bold leading-tight">{name}</h2>
         {other && other !== name && <p className="text-ink-2">{other}</p>}
         <div className="mt-3 flex flex-wrap justify-center gap-2">

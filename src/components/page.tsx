@@ -23,7 +23,14 @@ export function initials(name: string) {
   return (parts[0][0] + (parts[1]?.[0] ?? "")).toUpperCase();
 }
 
-export function Avatar({ name, id, size = 44, className }: { name: string; id: string; size?: number; className?: string }) {
+export function Avatar({ name, id, size = 44, className, src }: { name: string; id: string; size?: number; className?: string; src?: string | null }) {
+  if (src) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src={src} alt="" aria-hidden width={size} height={size} loading="lazy"
+        className={cn("shrink-0 rounded-2xl bg-surface-2 object-cover", className)} style={{ width: size, height: size }} />
+    );
+  }
   return (
     <span aria-hidden className={cn("grid shrink-0 place-items-center rounded-2xl font-bold", `tint-${tintFor(id)}`, className)}
       style={{ width: size, height: size, fontSize: size * 0.36 }}>

@@ -63,6 +63,12 @@ export async function admitStudent(_: StudentFormState, fd: FormData): Promise<S
   const supabase = await supabaseServer();
   const { data, error } = await supabase.rpc("admit_student", { p: p.data });
   if (error) return { ...dbError(error.message), values: valuesOf(fd) };
+  // optional photo, uploaded by the form before submitting
+  const photo = String(fd.get("photo_path") ?? "");
+  if (PHOTO_PATH.test(photo)) {
+    const { error: pe } = await supabase.rpc("set_student_photo", { p_student: data, p_path: photo });
+    if (pe) console.error("[students] photo link failed:", pe.message);
+  }
   redirect(`/students/${data}?admitted=1`);
 }
 
@@ -86,6 +92,21 @@ export async function setStudentStatus(id: string, _: StudentFormState, fd: Form
   const supabase = await supabaseServer();
   const { error } = await supabase.rpc("set_student_status", { p_id: id, p_status: status, p_reason: reason || null });
   if (error) return dbError(error.message);
+  refresh();
+  return { ok: true };
+}
+
+const PHOTO_PATH = /^[0-9a-f-]{36}\/[0-9a-f-]{36}\.jpg$/;
+
+/** Link a newly uploaded photo (or remove with null) and delete the previous file. */
+export async function setStudentPhoto(studentId: string, path: string | null): Promise<StudentFormState> {
+  try { await requirePermission("students.edit"); } catch { return { ok: false, error: "permission" }; }
+  if (!z.string().uuid().safeParse(studentId).success) return { ok: false, error: "save" };
+  if (path !== null && !PHOTO_PATH.test(path)) return { ok: false, error: "save" };
+  const supabase = await supabaseServer();
+  const { data: old, error } = await supabase.rpc("set_student_photo", { p_student: studentId, p_path: path });
+  if (error) return dbError(error.message);
+  if (old && old !== path) await supabase.storage.from("student-photos").remove([old as string]);
   refresh();
   return { ok: true };
 }

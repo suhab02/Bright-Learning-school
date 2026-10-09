@@ -10,6 +10,7 @@ import { Card, Skeleton } from "@/components/ui";
 import { Avatar, Chip, EmptyState, ListRow, PageHeader } from "@/components/page";
 import { cn } from "@/lib/cn";
 import { SearchBox } from "./search-box";
+import { photoUrls } from "@/lib/data/photos";
 
 export const metadata = { title: "Students" };
 
@@ -28,6 +29,7 @@ async function StudentList({ searchParams }: { searchParams: Promise<SP> }) {
     getSectionOptions(ctx.schoolId),
     listStudents({ q, classId, includeLeft, page }),
   ]);
+  const photos = await photoUrls(list.rows.map((r) => r.photo_path));
   const classes = [...new Map(sections.map((s) => [s.class_id, s])).values()];
   const href = (patch: Record<string, string | undefined>) => {
     const p = new URLSearchParams();
@@ -84,7 +86,7 @@ async function StudentList({ searchParams }: { searchParams: Promise<SP> }) {
               const parts = [cls, r.roll_no ? `${s.roll} ${formatNumber(r.roll_no, bn)}` : null, bn.bnDigits ? toBnDigits(r.student_code) : r.student_code].filter(Boolean);
               return (
                 <li key={r.id}>
-                  <ListRow href={`/students/${r.id}`} leading={<Avatar name={name} id={r.id} />}
+                  <ListRow href={`/students/${r.id}`} leading={<Avatar name={name} id={r.id} src={r.photo_path ? photos[r.photo_path] : null} />}
                     title={name} subtitle={parts.join(" · ")}
                     trailing={r.status !== "active" ? <Chip tint="rose">{s.status[r.status as keyof typeof s.status] ?? r.status}</Chip> : undefined} />
                 </li>

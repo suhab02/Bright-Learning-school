@@ -91,6 +91,9 @@ const en = {
     readOnly: "Only the Super Admin can change these settings.",
   },
   students: {
+    photo: "Photo", addPhoto: "Add photo", changePhoto: "Change photo", removePhoto: "Remove photo",
+    photoHint: "Take a photo or choose one from the gallery.", uploading: "Uploading photo…",
+    photoError: "This photo couldn't be used. Try another JPG or PNG photo.", photoSaved: "Photo saved.", photoRemoved: "Photo removed.",
     admitted: "Student admitted.", saved: "Changes saved.", searchLabel: "Search students", details: "Details",
     title: "Students", add: "Admit student", search: "Search name, ID, roll or phone",
     allClasses: "All classes", count: "students", empty: "No students yet. Admit the first student to get started.",
