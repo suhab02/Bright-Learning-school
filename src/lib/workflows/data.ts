@@ -9,7 +9,7 @@ export const named = (r: Row, locale: "bn" | "en") =>
   str(r, "name_en") ||
   str(r, "full_name") ||
   str(r, locale === "bn" ? "full_name_bn" : "full_name_en") ||
-  str(r, "full_name_en");
+  str(r, "full_name_en") || str(r, "name");
 export async function schoolRows(
   table: string,
   schoolId: string,

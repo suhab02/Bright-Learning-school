@@ -1,5 +1,5 @@
 "use client";
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bell, LayoutGrid, Monitor, Moon, Sun, X } from "lucide-react";
@@ -101,16 +101,7 @@ export function AppShell({ school, user, yearName, nav, bottom, unread, children
 
         {/* "More" sheet: every other section as a big-tap grid */}
         {sheet && (
-          <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={t.nav.more}>
-            <button className="absolute inset-0 bg-black/45" aria-label={t.common.cancel} onClick={() => setSheet(false)} />
-            <div className={cn(FRAME, "rise absolute inset-x-0 bottom-0 rounded-t-[32px] bg-bg px-4 pt-3 pb-[calc(1.25rem+env(safe-area-inset-bottom))]")}>
-              <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-line" aria-hidden />
-              <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-xl font-bold">{t.nav.more}</h2>
-                <button onClick={() => setSheet(false)} className="rounded-full p-2 text-ink-2 hover:bg-surface-2" aria-label={t.common.cancel}>
-                  <X className="size-5" />
-                </button>
-              </div>
+          <MenuSheet title={t.nav.more} onClose={() => setSheet(false)}>
               <div className="grid grid-cols-3 gap-2">
                 {more.map((i) => (
                   <Link key={i.href} href={i.href} onClick={() => setSheet(false)}
@@ -123,11 +114,47 @@ export function AppShell({ school, user, yearName, nav, bottom, unread, children
                   </Link>
                 ))}
               </div>
-            </div>
-          </div>
+          </MenuSheet>
         )}
       </div>
     </div>
+  );
+}
+
+/** Native modal top layer keeps header menus above the fixed bottom navigation. */
+function MenuSheet({ title, onClose, children }: {
+  title: string; onClose: () => void; children: React.ReactNode;
+}) {
+  const ref = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
+  const { t } = useT();
+  useEffect(() => {
+    const dialog = ref.current;
+    if (!dialog) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    dialog.showModal();
+    return () => {
+      dialog.close();
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
+  return (
+    <dialog ref={ref} aria-labelledby={titleId}
+      className="fixed inset-0 m-0 h-dvh max-h-none w-screen max-w-none border-0 bg-transparent p-0 text-ink backdrop:bg-black/45"
+      onCancel={(event) => { event.preventDefault(); onClose(); }}
+      onPointerDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
+      <div className={cn(FRAME, "rise absolute inset-x-0 bottom-0 max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain rounded-t-[32px] bg-surface px-4 pt-3 pb-[calc(1.25rem+env(safe-area-inset-bottom))]")}>
+        <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-line" aria-hidden />
+        <div className="mb-3 flex items-center justify-between">
+          <h2 id={titleId} className="text-xl font-bold">{title}</h2>
+          <button type="button" onClick={onClose} className="grid size-11 place-items-center rounded-full text-ink-2 hover:bg-surface-2" aria-label={t.common.cancel}>
+            <X className="size-5" />
+          </button>
+        </div>
+        {children}
+      </div>
+    </dialog>
   );
 }
 
@@ -143,10 +170,7 @@ function ProfileMenu({ user }: { user: ShellProps["user"] }) {
         {initials}
       </button>
       {open && (
-        <div className="fixed inset-0 z-50 text-ink" role="dialog" aria-modal="true" aria-label={t.nav.profile}>
-          <button className="absolute inset-0 bg-black/45" aria-label={t.common.cancel} onClick={() => setOpen(false)} />
-          <div className={cn(FRAME, "rise absolute inset-x-0 bottom-0 rounded-t-[32px] bg-surface px-5 pt-3 pb-[calc(1.25rem+env(safe-area-inset-bottom))]")}>
-            <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-line" aria-hidden />
+        <MenuSheet title={t.nav.profile} onClose={() => setOpen(false)}>
             <p className="text-lg font-semibold">{user.name}</p>
             <p className="truncate text-sm text-ink-2">{user.email}</p>
             <p className="mt-2 inline-block rounded-full bg-sky px-3 py-0.5 text-sm">{user.role}</p>
@@ -163,8 +187,7 @@ function ProfileMenu({ user }: { user: ShellProps["user"] }) {
               ))}
             </div>
             <SignOutButton label={t.common.signOut} className="mt-6 w-full" />
-          </div>
-        </div>
+        </MenuSheet>
       )}
     </>
   );

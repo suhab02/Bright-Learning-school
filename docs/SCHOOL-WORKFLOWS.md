@@ -8,7 +8,10 @@ All formerly unfinished app routes now have working Bengali/English phone screen
    create timetable lessons and school-calendar events. A teacher cannot be double-booked
    in the same period. The current academic year is used for assignments and lessons.
 2. **Teachers**: add staff details, edit names/contact details, set active/leave/resigned
-   status and assign sections or subjects. One class teacher is allowed per section/year.
+   status and assign sections or subjects. Save a teacher, then use **Add photo** on their
+   card to upload, replace or remove their picture. Photos are compressed on the device
+   and stored privately; only school accounts with `teachers.manage` can view or edit them.
+   One class teacher is allowed per section/year.
 3. **Staff**: the owner creates staff invitation links, changes non-owner roles,
    suspends/reactivates accounts and grants, denies or restores individual permissions.
    Changing a role clears existing permission overrides. Guardians cannot get staff permissions.

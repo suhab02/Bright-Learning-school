@@ -79,7 +79,7 @@ export function WorkflowForm({
               required={f.required}
               disabled={pending}
             >
-              {!f.value && (
+              {(!f.required || !f.value) && (
                 <option value="">
                   {locale === "bn" ? "নির্বাচন করুন" : "Choose"}
                 </option>
