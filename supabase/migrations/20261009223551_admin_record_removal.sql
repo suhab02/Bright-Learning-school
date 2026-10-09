@@ -68,7 +68,22 @@ begin
      into linked using p_id;
    if linked then raise exception 'record_in_use' using errcode='23503'; end if;
  end loop;
- execute format('delete from public.%I where id=$1 and school_id=$2',p_table) using p_id,p_school;
+ case p_table
+ when 'guardians' then delete from public.guardians where id=p_id and school_id=p_school;
+ when 'classes' then delete from public.classes where id=p_id and school_id=p_school;
+ when 'sections' then delete from public.sections where id=p_id and school_id=p_school;
+ when 'subjects' then delete from public.subjects where id=p_id and school_id=p_school;
+ when 'periods' then delete from public.periods where id=p_id and school_id=p_school;
+ when 'calendar_events' then delete from public.calendar_events where id=p_id and school_id=p_school;
+ when 'timetable_entries' then delete from public.timetable_entries where id=p_id and school_id=p_school;
+ when 'teacher_assignments' then delete from public.teacher_assignments where id=p_id and school_id=p_school;
+ when 'homework' then delete from public.homework where id=p_id and school_id=p_school;
+ when 'notices' then delete from public.notices where id=p_id and school_id=p_school;
+ when 'exams' then delete from public.exams where id=p_id and school_id=p_school;
+ when 'exam_subjects' then delete from public.exam_subjects where id=p_id and school_id=p_school;
+ when 'expenses' then delete from public.expenses where id=p_id and school_id=p_school;
+ else raise exception 'history_protected';
+ end case;
  perform public.write_audit(p_school,'record.delete',p_table,p_id::text,row_data,null,p_reason);
 end $$;
 revoke execute on function public.admin_remove_record(uuid,text,uuid,text) from public,anon;
