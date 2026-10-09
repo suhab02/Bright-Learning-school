@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { supabaseServer } from "../supabase/server";
 
 export const PAGE_SIZE = 30;
@@ -14,7 +15,7 @@ export type DirectoryRow = {
 };
 
 /** Sections of active classes, in class order: "Class One — A" */
-export async function getSectionOptions(schoolId: string): Promise<SectionOption[]> {
+export const getSectionOptions = cache(async (schoolId: string): Promise<SectionOption[]> => {
   const supabase = await supabaseServer();
   const { data, error } = await supabase.from("sections")
     .select("id, name, class_id, classes!inner(name_en, name_bn, sort_order, is_active)")
@@ -25,7 +26,7 @@ export async function getSectionOptions(schoolId: string): Promise<SectionOption
     .map((r) => ({ id: r.id, name: r.name, class_id: r.class_id, class_name_en: r.classes.name_en,
       class_name_bn: r.classes.name_bn, sort: r.classes.sort_order }))
     .sort((a, b) => a.sort - b.sort || a.name.localeCompare(b.name));
-}
+});
 
 /** Strip characters that have meaning in PostgREST filter syntax. */
 function cleanSearch(q: string) {

@@ -1,6 +1,5 @@
 "use client";
 import { useActionState, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useLocale } from "@/lib/i18n/client";
 import { attendanceLabels } from "@/lib/attendance/labels";
 import { STATUSES, type AttendanceRow, type AttendanceStatus } from "@/lib/attendance/shared";
@@ -13,7 +12,6 @@ export function Register({ rows, section, date, editable, past }: {
 }) {
   const locale = useLocale();
   const s = attendanceLabels(locale);
-  const router = useRouter();
   const [draft, setDraft] = useState(rows);
   const [reason, setReason] = useState("");
   const [dirty, setDirty] = useState(false);
@@ -23,10 +21,10 @@ export function Register({ rows, section, date, editable, past }: {
   useEffect(() => {
     if (state && state !== previous.current && state.ok) {
       setDirty(false);
-      router.refresh();
+      window.dispatchEvent(new Event("school:saved"));
     }
     previous.current = state;
-  }, [state, router]);
+  }, [state]);
   useEffect(() => {
     if (!dirty) return;
     const warn = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ""; };
@@ -47,7 +45,7 @@ export function Register({ rows, section, date, editable, past }: {
     setDirty(true);
   }
   const complete = values.every((row) => row.status !== null);
-  return <form action={action} className="space-y-4">
+  return <form action={action} data-unsaved={dirty ? "true" : "false"} className="space-y-4">
     <input type="hidden" name="section" value={section} />
     <input type="hidden" name="date" value={date} />
     <input type="hidden" name="entries" value={JSON.stringify(values.map((r) => ({ student_id: r.student_id,
