@@ -10,18 +10,31 @@
 /* Brand tokens. --brand is overridden at runtime from Settings → Branding. */
 :root {
   --brand: #114364;          /* logo navy */
-  --sun: #ee7c19;            /* logo orange: decoration + badges */
+  --brand-deep: #0a2c45;     /* gradient end */
+  --sun: #ee7c19;            /* logo orange */
+  --gold: #f6b33e;           /* logo sun gold */
   --accent: #168ce6;         /* modern blue */
   --sky: #eaf7ff;
   --paid: #20b66a;           /* emerald: paid / present only */
   --due: #f4bc45;            /* gold: amounts due / late only */
   --danger: #e5484d;
-  --bg: #f4f7fb;
+  --bg: #f2f5f9;
   --surface: #ffffff;
-  --surface-2: #f8fafd;
-  --ink: #12213d;
-  --ink-2: #4a5a78;
-  --line: #dde5f0;
+  --surface-2: #f4f7fb;
+  --ink: #0f1f36;
+  --ink-2: #56657e;
+  --line: #e3e9f1;
+  --shadow-card: 0 1px 2px rgb(15 40 70 / 0.04), 0 10px 30px -14px rgb(15 40 70 / 0.16);
+  --shadow-float: 0 12px 40px -12px rgb(10 44 69 / 0.35);
+  /* module tints (icon chips): background / foreground */
+  --t-blue: #e7f2fd;   --t-blue-fg: #1270c4;
+  --t-green: #e5f7ee;  --t-green-fg: #138a4f;
+  --t-orange: #fdefe2; --t-orange-fg: #c8600a;
+  --t-violet: #efebfd; --t-violet-fg: #5b3fd0;
+  --t-rose: #fdeaec;   --t-rose-fg: #c22f35;
+  --t-teal: #e2f6f5;   --t-teal-fg: #0b7f7e;
+  --t-amber: #fdf3dc;  --t-amber-fg: #9a6a00;
+  --t-slate: #edf1f6;  --t-slate-fg: #3f5170;
   --chart-1: #168ce6;   /* collected (validated: CVD + contrast) */
   --chart-2: #c2410c;   /* expenses */
   color-scheme: light;
@@ -33,7 +46,17 @@
   --surface-2: #17253f;
   --ink: #e8eef8;
   --ink-2: #9fb0cc;
-  --line: #24365a;
+  --line: #22355a;
+  --shadow-card: 0 0 0 1px rgb(255 255 255 / 0.05);
+  --shadow-float: 0 12px 40px -12px rgb(0 0 0 / 0.6);
+  --t-blue: #12304f;   --t-blue-fg: #7cc0f7;
+  --t-green: #0f3627;  --t-green-fg: #6fdca3;
+  --t-orange: #3d2410; --t-orange-fg: #f7a865;
+  --t-violet: #2a2350; --t-violet-fg: #b3a3f7;
+  --t-rose: #3f1a1f;   --t-rose-fg: #f59ba0;
+  --t-teal: #0f3533;   --t-teal-fg: #6fd6d4;
+  --t-amber: #3a2d0e;  --t-amber-fg: #f3cd6d;
+  --t-slate: #1d2b45;  --t-slate-fg: #aebcd4;
   --chart-1: #2f8fdb;
   --chart-2: #d9692b;
   color-scheme: dark;
@@ -43,6 +66,8 @@
   --color-brand: var(--brand);
   --color-accent: var(--accent);
   --color-sun: var(--sun);
+  --color-gold: var(--gold);
+  --color-brand-deep: var(--brand-deep);
   --color-sky: var(--sky);
   --color-paid: var(--paid);
   --color-due: var(--due);
@@ -67,6 +92,30 @@ body {
 html[lang="bn"] body { font-family: var(--font-bn); line-height: 1.6; }
 
 .num { font-variant-numeric: tabular-nums; }
+
+/* signature header: deep navy gradient with a soft sun glow from the crest */
+.brand-band {
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgb(238 124 25 / 0.28) 0%, transparent 55%),
+    radial-gradient(90% 80% at 0% 100%, rgb(22 140 230 / 0.22) 0%, transparent 60%),
+    linear-gradient(160deg, var(--brand) 0%, var(--brand-deep) 100%);
+  color: white;
+}
+.card-shadow { box-shadow: var(--shadow-card); }
+.float-shadow { box-shadow: var(--shadow-float); }
+.press { transition: transform .12s ease, background-color .15s ease, box-shadow .15s ease; }
+.press:active { transform: scale(0.97); }
+.tint-blue { background: var(--t-blue); color: var(--t-blue-fg); }
+.tint-green { background: var(--t-green); color: var(--t-green-fg); }
+.tint-orange { background: var(--t-orange); color: var(--t-orange-fg); }
+.tint-violet { background: var(--t-violet); color: var(--t-violet-fg); }
+.tint-rose { background: var(--t-rose); color: var(--t-rose-fg); }
+.tint-teal { background: var(--t-teal); color: var(--t-teal-fg); }
+.tint-amber { background: var(--t-amber); color: var(--t-amber-fg); }
+.tint-slate { background: var(--t-slate); color: var(--t-slate-fg); }
+
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.rise { animation: rise .35s ease-out both; }
 
 /* Kantha running stitch — the one decorative motif, used on headers and receipts */
 .stitch {

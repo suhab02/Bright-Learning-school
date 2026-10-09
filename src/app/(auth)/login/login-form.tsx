@@ -35,8 +35,8 @@ export function LoginForm({ searchParams }: { searchParams: Promise<Record<strin
   }
 
   return (
-    <Card className="p-6 shadow-xl shadow-brand/10">
-      <h2 className="text-xl font-semibold">{t.auth.signInTitle}</h2>
+    <Card className="rise p-6">
+      <h2 className="text-[22px] font-bold">{t.auth.signInTitle}</h2>
       <p className="mt-1 text-sm text-ink-2">{t.auth.signInSubtitle}</p>
       {linkNotice && <Notice tone="success" className="mt-4">{t.auth.linkOpened}</Notice>}
       <div className="mt-5"><GoogleButton next={next} /></div>

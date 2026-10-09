@@ -10,8 +10,8 @@ export default function ResetPasswordPage() {
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
   return (
-    <Card className="p-6 shadow-xl shadow-brand/10">
-      <h2 className="text-xl font-semibold">{t.auth.resetTitle}</h2>
+    <Card className="rise p-6">
+      <h2 className="text-[22px] font-bold">{t.auth.resetTitle}</h2>
       {sent ? <Notice tone="success" className="mt-4">{t.auth.resetSent}</Notice> : (
         <form className="mt-5 flex flex-col gap-4" onSubmit={async (e) => {
           e.preventDefault(); setBusy(true);

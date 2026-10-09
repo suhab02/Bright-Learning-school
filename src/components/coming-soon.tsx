@@ -1,22 +1,20 @@
 import { Suspense } from "react";
-import { Construction } from "lucide-react";
+import { Hammer } from "lucide-react";
 import { getT } from "@/lib/i18n/server";
 import type { NavKey } from "@/lib/nav";
 import { Card, Skeleton } from "./ui";
+import { EmptyState, PageHeader } from "./page";
 
 async function Inner({ section }: { section: NavKey }) {
   const { t } = await getT();
   return (
-    <div className="mx-auto ">
-      <h1 className="text-2xl font-bold">{t.nav[section]}</h1>
-      <Card className="mt-4 flex items-start gap-4 p-6">
-        <Construction className="size-6 shrink-0 text-due" aria-hidden />
-        <p className="text-ink-2">{t.common.comingSoon}</p>
-      </Card>
+    <div>
+      <PageHeader title={t.nav[section]} />
+      <Card><EmptyState icon={Hammer} title={t.common.comingSoon} /></Card>
     </div>
   );
 }
 /** Honest placeholder for sections that are not implemented yet. */
 export function ComingSoon({ section }: { section: NavKey }) {
-  return <Suspense fallback={<Skeleton className="mx-auto h-40 " />}><Inner section={section} /></Suspense>;
+  return <Suspense fallback={<Skeleton className="h-48" />}><Inner section={section} /></Suspense>;
 }

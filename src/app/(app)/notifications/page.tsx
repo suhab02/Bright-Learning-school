@@ -26,7 +26,7 @@ async function List() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold">{t.common.notifications}</h1>
+        <h1 className="text-[26px] font-bold tracking-tight">{t.common.notifications}</h1>
         {rows.some((r) => !r.read_at) && (
           <form action={markAllRead}><Button variant="secondary" size="sm" type="submit">✓ {locale === "bn" ? "সব পড়া হয়েছে" : "Mark all as read"}</Button></form>
         )}

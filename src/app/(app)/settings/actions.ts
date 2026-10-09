@@ -6,7 +6,7 @@ import { supabaseServer } from "@/lib/supabase/server";
 import { BRANDING_TAG } from "@/lib/school";
 import { parseTaka } from "@/lib/format";
 
-export type FormState = { ok: boolean; error?: string; fieldErrors?: Record<string, string> } | null;
+export type FormState = { ok: boolean; error?: string; fieldErrors?: Record<string, string>; values?: Record<string, string>; n?: number } | null;
 
 const opt = (max = 200) => z.string().trim().max(max).transform((v) => (v === "" ? null : v));
 const optUrl = z.string().trim().max(500).refine((v) => v === "" || /^https?:\/\/\S+$/i.test(v), "url")
@@ -44,6 +44,13 @@ const schema = z.object({
   late_fee_grace_days: z.coerce.number().int().min(0).max(60),
 });
 
+function formValues(fd: FormData) {
+  const o: Record<string, string> = {};
+  for (const [k, v] of fd.entries()) if (!k.startsWith("$")) o[k] = k in o ? `${o[k]},${v}` : String(v);
+  o.__checked = ["use_bengali_digits", "late_fee_enabled"].filter((k) => fd.get(k) === "on").join(",") || "-";
+  return o;
+}
+
 export async function updateSchool(_: FormState, fd: FormData): Promise<FormState> {
   let ctx;
   try { ctx = await requirePermission("settings.manage"); } catch { return { ok: false, error: "permission" }; }
@@ -58,14 +65,14 @@ export async function updateSchool(_: FormState, fd: FormData): Promise<FormStat
   if (!parsed.success) {
     const fieldErrors: Record<string, string> = {};
     for (const i of parsed.error.issues) fieldErrors[String(i.path[0])] ??= i.message;
-    return { ok: false, fieldErrors };
+    return { ok: false, fieldErrors, values: formValues(fd) };
   }
   const v = parsed.data;
-  if (v.school_ends <= v.school_starts) return { ok: false, fieldErrors: { school_ends: "range" } };
+  if (v.school_ends <= v.school_starts) return { ok: false, fieldErrors: { school_ends: "range" }, values: formValues(fd) };
 
   const supabase = await supabaseServer();
   const { data, error } = await supabase.from("schools").update(v).eq("id", ctx.schoolId).select("id");
-  if (error) return { ok: false, error: "save" };
+  if (error) return { ok: false, error: "save", values: formValues(fd) };
   if (!data?.length) return { ok: false, error: "permission" }; // RLS blocked it
   updateTag(BRANDING_TAG);
   refresh();

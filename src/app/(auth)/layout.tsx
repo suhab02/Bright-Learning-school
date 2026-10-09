@@ -12,11 +12,11 @@ async function Brand() {
   return (
     <div className="flex flex-col items-center text-center gap-3 text-white">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={b?.logoUrl ?? "/brand/logo.png"} alt="" className="size-28 rounded-3xl bg-white object-contain p-2 shadow-lg shadow-black/20" />
-      <h1 className="text-2xl font-bold leading-tight">{name}</h1>
+      <img src={b?.logoUrl ?? "/brand/logo.png"} alt="" className="rise size-28 rounded-[30px] bg-white object-contain p-2 shadow-xl shadow-black/30" />
+      <h1 className="text-[26px] font-bold leading-tight tracking-tight">{name}</h1>
       {b?.place && <p className="text-white/75 text-sm">{b.place}</p>}
       {slogan && <p className="text-white/90">{slogan}</p>}
-      <div className="stitch w-40 text-sun mt-1" aria-hidden />
+      <div className="stitch w-40 text-gold mt-1" aria-hidden />
     </div>
   );
 }
@@ -35,10 +35,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-dvh bg-[color-mix(in_oklab,var(--brand)_8%,var(--bg))]">
     <div className="relative mx-auto flex min-h-dvh w-full max-w-[480px] flex-col bg-bg sm:shadow-2xl sm:shadow-brand/15">
-      <div className="bg-brand px-6 pt-14 pb-16">
+      <div className="brand-band rounded-b-[36px] px-6 pt-14 pb-20">
         <Suspense fallback={<Skeleton className="mx-auto h-40 w-64 bg-white/10" />}><Brand /></Suspense>
       </div>
-      <div className="-mt-10 flex-1">
+      <div className="-mt-12 flex-1">
         <Suspense fallback={<Skeleton className="mx-auto h-80 max-w-md" />}><Shell>{children}</Shell></Suspense>
       </div>
     </div>

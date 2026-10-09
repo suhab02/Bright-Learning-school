@@ -8,7 +8,12 @@ import { updateSchool, type FormState } from "./actions";
 
 export function SchoolForm({ school, readOnly }: { school: SchoolRow; readOnly: boolean }) {
   const { t } = useT();
-  const [state, action, pending] = useActionState<FormState, FormData>(updateSchool, null);
+  const [state, action, pending] = useActionState<FormState, FormData>(
+    async (prev, fd) => { const r = await updateSchool(prev, fd); return r ? { ...r, n: (prev?.n ?? 0) + 1 } : r; }, null);
+  // after an error, re-show exactly what was typed (React resets forms after an action)
+  const typed = state && !state.ok ? state.values : undefined;
+  const val = (k: keyof SchoolRow): string | number => typed?.[k] ?? (school[k] as string | number | null) ?? "";
+  const checked = (k: "use_bengali_digits" | "late_fee_enabled") => typed ? typed.__checked.split(",").includes(k) : school[k];
   // "edited while showing result X": unsaved if edited after the latest result, or the last save failed
   const [editedAt, setEditedAt] = useState<FormState | "clean">("clean");
   const dirty = editedAt !== "clean" && (editedAt === state || !state?.ok);
@@ -33,12 +38,12 @@ export function SchoolForm({ school, readOnly }: { school: SchoolRow; readOnly: 
   const text = (name: keyof SchoolRow, label: string, o: { type?: string; inputMode?: "numeric" | "tel" | "email" | "url" | "decimal"; required?: boolean; hint?: string } = {}) => (
     <Field label={label} htmlFor={name} error={err(name)} hint={o.hint}>
       <Input id={name} name={name} type={o.type ?? "text"} inputMode={o.inputMode} required={o.required}
-        defaultValue={(school[name] as string | number | null) ?? ""} disabled={readOnly} aria-invalid={Boolean(err(name))} />
+        defaultValue={val(name)} disabled={readOnly} aria-invalid={Boolean(err(name))} />
     </Field>
   );
 
   return (
-    <form action={action} onChange={() => setEditedAt(state)} className="space-y-5">
+    <form key={state?.n ?? 0} action={action} onChange={() => setEditedAt(state)} className="space-y-5">
       <fieldset disabled={readOnly || pending} className="space-y-5">
         <Card className="p-5">
           <h2 className="font-semibold">{s.identity}</h2>
@@ -51,7 +56,7 @@ export function SchoolForm({ school, readOnly }: { school: SchoolRow; readOnly: 
             {text("established_year", s.established, { inputMode: "numeric" })}
             {text("registration_no", s.registration)}
             <Field label={s.description} htmlFor="description">
-              <Textarea id="description" name="description" defaultValue={school.description ?? ""} />
+              <Textarea id="description" name="description" defaultValue={val("description")} />
             </Field>
           </div>
         </Card>
@@ -94,12 +99,12 @@ export function SchoolForm({ school, readOnly }: { school: SchoolRow; readOnly: 
               </div>
             </Field>
             <Field label={s.defaultLanguage} htmlFor="default_locale">
-              <Select id="default_locale" name="default_locale" defaultValue={school.default_locale}>
+              <Select id="default_locale" name="default_locale" defaultValue={String(val("default_locale"))}>
                 <option value="bn">বাংলা</option><option value="en">English</option>
               </Select>
             </Field>
             <label className="flex items-center gap-3">
-              <input type="checkbox" name="use_bengali_digits" defaultChecked={school.use_bengali_digits} className="size-5 accent-[var(--brand)]" />
+              <input type="checkbox" name="use_bengali_digits" defaultChecked={checked("use_bengali_digits")} className="size-5 accent-[var(--brand)]" />
               {s.bengaliDigits}
             </label>
             {text("receipt_header", s.receiptHeader)}
@@ -115,7 +120,7 @@ export function SchoolForm({ school, readOnly }: { school: SchoolRow; readOnly: 
             <div className="mt-2 flex flex-wrap gap-2">
               {t.days.map((d, i) => (
                 <label key={i} className="flex items-center gap-2 rounded-xl border border-line px-3 py-2 has-checked:border-accent has-checked:bg-sky">
-                  <input type="checkbox" name="working_days" value={i} defaultChecked={school.working_days.includes(i)} className="accent-[var(--brand)]" />
+                  <input type="checkbox" name="working_days" value={i} defaultChecked={typed ? (typed.working_days ?? "").split(",").includes(String(i)) : school.working_days.includes(i)} className="accent-[var(--brand)]" />
                   {d}
                 </label>
               ))}
@@ -123,10 +128,10 @@ export function SchoolForm({ school, readOnly }: { school: SchoolRow; readOnly: 
           </fieldset>
           <div className="mt-4 grid grid-cols-2 gap-4">
             <Field label={s.schoolHours} htmlFor="school_starts">
-              <Input id="school_starts" name="school_starts" type="time" defaultValue={school.school_starts?.slice(0, 5) ?? "08:00"} />
+              <Input id="school_starts" name="school_starts" type="time" defaultValue={typed?.school_starts ?? school.school_starts?.slice(0, 5) ?? "08:00"} />
             </Field>
             <Field label={"\u00a0"} htmlFor="school_ends" error={err("school_ends")}>
-              <Input id="school_ends" name="school_ends" type="time" defaultValue={school.school_ends?.slice(0, 5) ?? "13:00"} />
+              <Input id="school_ends" name="school_ends" type="time" defaultValue={typed?.school_ends ?? school.school_ends?.slice(0, 5) ?? "13:00"} />
             </Field>
           </div>
         </Card>
@@ -135,17 +140,17 @@ export function SchoolForm({ school, readOnly }: { school: SchoolRow; readOnly: 
           <h2 className="font-semibold">{s.feesSettings}</h2>
           <div className="mt-4 grid gap-4">
             <Field label={s.dueDay} htmlFor="default_due_day" error={err("default_due_day")}>
-              <Input id="default_due_day" name="default_due_day" type="number" min={1} max={28} defaultValue={school.default_due_day} />
+              <Input id="default_due_day" name="default_due_day" type="number" min={1} max={28} defaultValue={val("default_due_day")} />
             </Field>
             <Field label={s.lateFee} htmlFor="late_fee_amount" error={err("late_fee_amount")}>
               <Input id="late_fee_amount" name="late_fee_amount" inputMode="decimal"
-                defaultValue={formatTaka(school.late_fee_amount).replace("৳", "")} />
+                defaultValue={typed?.late_fee_amount ?? formatTaka(school.late_fee_amount).replace("৳", "")} />
             </Field>
             <Field label={s.graceDays} htmlFor="late_fee_grace_days">
-              <Input id="late_fee_grace_days" name="late_fee_grace_days" type="number" min={0} max={60} defaultValue={school.late_fee_grace_days} />
+              <Input id="late_fee_grace_days" name="late_fee_grace_days" type="number" min={0} max={60} defaultValue={val("late_fee_grace_days")} />
             </Field>
             <label className="flex items-center gap-3">
-              <input type="checkbox" name="late_fee_enabled" defaultChecked={school.late_fee_enabled} className="size-5 accent-[var(--brand)]" />
+              <input type="checkbox" name="late_fee_enabled" defaultChecked={checked("late_fee_enabled")} className="size-5 accent-[var(--brand)]" />
               {s.lateFeeEnabled}
             </label>
           </div>

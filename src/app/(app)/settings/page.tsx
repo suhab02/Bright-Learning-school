@@ -3,6 +3,7 @@ import { can, requireContext } from "@/lib/auth";
 import { getT } from "@/lib/i18n/server";
 import { getSchool } from "@/lib/data/school";
 import { Notice, Skeleton } from "@/components/ui";
+import { PageHeader } from "@/components/page";
 import { SchoolForm } from "./school-form";
 import { LogoUpload } from "./logo-upload";
 
@@ -15,10 +16,7 @@ async function Settings() {
   const readOnly = !can(ctx, "settings.manage");
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-2xl font-bold">{t.settings.schoolProfile}</h1>
-        <p className="text-ink-2">{t.settings.profileHint}</p>
-      </div>
+      <PageHeader title={t.settings.schoolProfile} subtitle={t.settings.profileHint} />
       <LogoUpload schoolId={school.id} logoUrl={school.logoUrl} custom={school.customLogo} readOnly={readOnly} />
       <SchoolForm school={school} readOnly={readOnly} />
     </div>

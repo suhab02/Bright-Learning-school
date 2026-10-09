@@ -1,12 +1,14 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { CalendarCheck, HandCoins, Megaphone, Plus, ChartColumn, Wallet, CircleCheck, Circle } from "lucide-react";
+import { CalendarCheck, HandCoins, Megaphone, UserPlus, ChartColumn, Wallet, CircleCheck, Circle, GraduationCap, Users, UserRound, TrendingUp, Landmark, AlertCircle, ChevronRight } from "lucide-react";
 import { can, requireContext, type AppContext } from "@/lib/auth";
 import { getT } from "@/lib/i18n/server";
 import { supabaseServer } from "@/lib/supabase/server";
 import { getSchool } from "@/lib/data/school";
 import { dhakaHour, dhakaToday, formatDate, formatNumber, formatTaka } from "@/lib/format";
 import { Card, Skeleton } from "@/components/ui";
+import { HeroBand, IconChip, SectionTitle, Tile, type Tint } from "@/components/page";
+import type { LucideIcon } from "lucide-react";
 import { IncomeExpenseChart, type MonthPoint } from "@/components/charts/income-expense";
 import type { Dictionary } from "@/lib/i18n";
 
@@ -74,29 +76,65 @@ async function Dashboard() {
   ] : [];
   const setupOpen = setup.some((s) => !s.done);
 
+  const done = setup.filter((x) => x.done).length;
+  const stats: { icon: LucideIcon; tint: Tint; label: string; value: string; sub?: string; href?: string }[] = [
+    { icon: GraduationCap, tint: "orange", label: t.dashboard.students, value: n(c.students_active), sub: `${t.dashboard.admissions}: ${n(c.admissions_this_year)}`, href: "/students" },
+    { icon: CalendarCheck, tint: "green", label: t.dashboard.present,
+      value: c.marked_today ? `${n(c.present_today)}` : "—",
+      sub: c.marked_today ? `${t.dashboard.absent}: ${n(c.absent_today)}` : t.dashboard.attendanceNotTaken, href: "/attendance" },
+    ...(finance ? [
+      { icon: Wallet, tint: "teal" as Tint, label: t.dashboard.collectedMonth, value: money(month?.collected_gross), href: "/payments" },
+      { icon: AlertCircle, tint: "amber" as Tint, label: t.dashboard.outstanding, value: money(month?.outstanding_now),
+        sub: (month?.overdue_now ?? 0) > 0 ? `${t.dashboard.overdue}: ${money(month?.overdue_now)}` : undefined, href: "/fees" },
+      { icon: Landmark, tint: "blue" as Tint, label: t.dashboard.collectedYear, value: money(year?.collected_gross), href: "/reports" },
+      { icon: TrendingUp, tint: "violet" as Tint, label: t.dashboard.surplusMonth, value: money(month?.surplus),
+        sub: `${t.dashboard.expenses}: ${money(month?.expenses_approved)}`, href: "/reports" },
+    ] : []),
+    { icon: UserRound, tint: "slate", label: t.dashboard.staff, value: n(c.staff), href: "/staff" },
+    { icon: Users, tint: "rose", label: t.dashboard.guardians, value: n(c.guardians), href: "/guardians" },
+  ];
+
   return (
-    <div className="space-y-6">
+    <div>
       <h1 className="sr-only">{t.nav.dashboard}</h1>
-      {/* Greeting band with the school crest */}
-      <section className="relative overflow-hidden rounded-3xl bg-brand px-5 py-5 text-white">
+      <HeroBand>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={school.logoUrl} alt="" aria-hidden className="pointer-events-none absolute -right-6 -bottom-8 size-36 opacity-15" />
-        <p className="text-white/80">{greeting},</p>
-        <p className="mt-0.5 text-2xl font-bold leading-tight">{displayName}</p>
-        <div className="stitch my-3 w-40 text-sun" aria-hidden />
-        <p className="text-sm text-white/85">{t.dashboard.today}: {formatDate(today, locale, bn)}</p>
-      </section>
+        <img src={school.logoUrl} alt="" aria-hidden className="pointer-events-none absolute -right-8 -top-2 size-44 opacity-[0.09]" />
+        <p className="text-white/75">{greeting},</p>
+        <p className="mt-0.5 text-[28px] font-bold leading-tight tracking-tight">{displayName}</p>
+        <p className="mt-2 inline-flex rounded-full bg-white/12 px-3 py-1 text-[13px] ring-1 ring-white/15">
+          {formatDate(today, locale, bn)}
+        </p>
+        {finance ? (
+          <div className="mt-5 grid grid-cols-2 gap-3">
+            <div className="rounded-[20px] bg-white/10 p-4 ring-1 ring-white/15 backdrop-blur">
+              <p className="text-[13px] text-white/75">{t.dashboard.collectedToday}</p>
+              <p className="num mt-1 text-[22px] font-bold">{money(day?.collected_gross)}</p>
+            </div>
+            <div className="rounded-[20px] bg-white/10 p-4 ring-1 ring-white/15 backdrop-blur">
+              <p className="text-[13px] text-white/75">{t.nav.attendance}</p>
+              <p className="num mt-1 text-[22px] font-bold">{attendancePct !== null ? `${n(attendancePct)}%` : "—"}</p>
+            </div>
+          </div>
+        ) : null}
+      </HeroBand>
 
       {setupOpen && (
-        <Card className="p-5">
-          <h2 className="font-semibold">{t.dashboard.setupTitle}</h2>
-          <p className="mt-1 text-sm text-ink-2">{t.dashboard.setupBody}</p>
-          <ol className="mt-4 grid gap-2">
-            {setup.map((s) => (
-              <li key={s.href}>
-                <Link href={s.href} className="flex items-center gap-3 rounded-xl border border-line px-3 py-3 hover:bg-surface-2">
-                  {s.done ? <CircleCheck className="size-5 text-paid" aria-label="done" /> : <Circle className="size-5 text-ink-2" aria-label="to do" />}
-                  <span className={s.done ? "text-ink-2 line-through" : ""}>{s.label}</span>
+        <Card className="rise p-5">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="font-bold">{t.dashboard.setupTitle}</h2>
+            <span className="num text-sm font-semibold text-ink-2">{n(done)}/{n(setup.length)}</span>
+          </div>
+          <div className="mt-3 h-2 overflow-hidden rounded-full bg-surface-2">
+            <div className="h-full rounded-full bg-gradient-to-r from-sun to-gold transition-all" style={{ width: `${(done / setup.length) * 100}%` }} />
+          </div>
+          <ol className="mt-4 space-y-2">
+            {setup.map((x) => (
+              <li key={x.href}>
+                <Link href={x.href} className="press flex items-center gap-3 rounded-2xl bg-surface-2 px-3.5 py-3">
+                  {x.done ? <CircleCheck className="size-5 shrink-0 text-paid" aria-label="done" /> : <Circle className="size-5 shrink-0 text-ink-2/50" aria-label="to do" />}
+                  <span className={x.done ? "flex-1 text-ink-2 line-through" : "flex-1 font-medium"}>{x.label}</span>
+                  {!x.done && <ChevronRight className="size-4 text-ink-2/50" aria-hidden />}
                 </Link>
               </li>
             ))}
@@ -104,124 +142,75 @@ async function Dashboard() {
         </Card>
       )}
 
-      <div className="grid gap-4">
-        {/* Today */}
-        <Card className="p-5">
-          <h2 className="font-semibold">{t.dashboard.today}</h2>
-          {c.marked_today === 0 ? (
-            <p className="mt-3 text-ink-2">{t.dashboard.attendanceNotTaken}</p>
-          ) : (
-            <div className="mt-3 flex items-end gap-6">
-              <div>
-                <p className="num text-4xl font-bold text-ink">{attendancePct !== null ? n(attendancePct) + "%" : "—"}</p>
-                <p className="text-sm text-ink-2">{t.nav.attendance}</p>
-              </div>
-              <dl className="grid grid-cols-2 gap-x-4 text-sm">
-                <dt className="text-ink-2">{t.dashboard.present}</dt><dd className="num font-semibold text-paid">{n(c.present_today)}</dd>
-                <dt className="text-ink-2">{t.dashboard.absent}</dt><dd className="num font-semibold text-danger">{n(c.absent_today)}</dd>
-              </dl>
-            </div>
-          )}
-          {finance && (
-            <div className="mt-5 border-t border-line pt-4">
-              <p className="text-sm text-ink-2">{t.dashboard.collectedToday}</p>
-              <p className="num text-2xl font-bold">{money(day?.collected_gross)}</p>
-            </div>
-          )}
-        </Card>
+      <QuickActions ctx={ctx} t={t} />
 
-        {/* Money */}
-        {finance && (
-          <Card className="p-5">
-            <div className="grid grid-cols-2 gap-5">
-              <Metric label={t.dashboard.collectedMonth} value={money(month?.collected_gross)} />
-              <Metric label={t.dashboard.collectedYear} value={money(year?.collected_gross)} />
-              <Metric label={t.dashboard.outstanding} value={money(month?.outstanding_now)} tone="due"
-                sub={(month?.overdue_now ?? 0) > 0 ? `${t.dashboard.overdue}: ${money(month?.overdue_now)}` : undefined} />
-              <Metric label={t.dashboard.surplusMonth} value={money(month?.surplus)}
-                sub={`${t.dashboard.expensesMonth}: ${money(month?.expenses_approved)}`} />
-            </div>
-            {(month?.unverified_wallet_bank ?? 0) > 0 && (
-              <p className="mt-4 text-xs text-ink-2">
-                {t.dashboard.collectedMonth} {t.dashboard.unverifiedNote}: <span className="num">{money(month?.unverified_wallet_bank)}</span>
-              </p>
-            )}
-          </Card>
-        )}
+      <SectionTitle>{t.dashboard.today}</SectionTitle>
+      <div className="grid grid-cols-2 gap-3">
+        {stats.map((x) => {
+          const inner = (
+            <>
+              <IconChip icon={x.icon} tint={x.tint} size={40} />
+              <p className="num mt-3 truncate text-[22px] font-bold leading-none">{x.value}</p>
+              <p className="mt-1.5 text-[13px] font-medium text-ink-2">{x.label}</p>
+              {x.sub && <p className="num mt-0.5 truncate text-xs text-ink-2/80">{x.sub}</p>}
+            </>
+          );
+          return x.href
+            ? <Link key={x.label} href={x.href} className="press block rounded-[22px] bg-surface p-4 card-shadow">{inner}</Link>
+            : <div key={x.label} className="rounded-[22px] bg-surface p-4 card-shadow">{inner}</div>;
+        })}
       </div>
-
-      {/* People */}
-      <Card className="grid grid-cols-2 divide-line p-0">
-        <People label={t.dashboard.students} value={n(c.students_active)} />
-        <People label={t.dashboard.admissions} value={n(c.admissions_this_year)} />
-        <People label={t.dashboard.staff} value={n(c.staff)} />
-        <People label={t.dashboard.guardians} value={n(c.guardians)} />
-      </Card>
-
-      <QuickActions ctx={ctx} t={t} pendingExpenses={c.pending_expenses} n={n} />
-
-      {finance && (
-        <Card className="p-5">
-          <h2 className="font-semibold">{t.dashboard.monthlyChart}</h2>
-          {hasSeries ? <div className="mt-4"><IncomeExpenseChart data={series} bnDigits={bn.bnDigits} /></div>
-            : <p className="mt-3 text-ink-2">{t.dashboard.noData}</p>}
-        </Card>
+      {finance && (month?.unverified_wallet_bank ?? 0) > 0 && (
+        <p className="mt-2 px-1 text-xs text-ink-2">
+          {t.dashboard.collectedMonth} {t.dashboard.unverifiedNote}: <span className="num">{money(month?.unverified_wallet_bank)}</span>
+        </p>
       )}
-    </div>
-  );
-}
 
-function Metric({ label, value, sub, tone }: { label: string; value: string; sub?: string; tone?: "due" }) {
-  return (
-    <div className={tone === "due" ? "rounded-xl border-l-4 border-due pl-3" : ""}>
-      <p className="text-sm text-ink-2">{label}</p>
-      <p className="num mt-0.5 text-2xl font-bold">{value}</p>
-      {sub && <p className="num mt-0.5 text-xs text-ink-2">{sub}</p>}
-    </div>
-  );
-}
-function People({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="px-5 py-4">
-      <p className="num text-2xl font-bold">{value}</p>
-      <p className="text-sm text-ink-2">{label}</p>
-    </div>
-  );
-}
-
-function QuickActions({ ctx, t, pendingExpenses, n }: { ctx: AppContext; t: Dictionary; pendingExpenses: number; n: (v: number) => string }) {
-  const items = [
-    { show: can(ctx, "students.create"), href: "/students/new", label: t.dashboard.qaAddStudent, Icon: Plus },
-    { show: can(ctx, "attendance.create") || ctx.teachesSections.length > 0, href: "/attendance", label: t.dashboard.qaAttendance, Icon: CalendarCheck },
-    { show: can(ctx, "fees.collect"), href: "/fees", label: t.dashboard.qaCollect, Icon: Wallet },
-    { show: can(ctx, "expenses.create"), href: "/expenses", label: t.dashboard.qaExpense, Icon: HandCoins },
-    { show: can(ctx, "notices.manage") || ctx.teachesSections.length > 0, href: "/notices", label: t.dashboard.qaNotice, Icon: Megaphone },
-    { show: can(ctx, "reports.view"), href: "/reports", label: t.dashboard.qaReport, Icon: ChartColumn },
-  ].filter((i) => i.show);
-  if (!items.length) return null;
-  return (
-    <section>
-      <h2 className="mb-3 font-semibold">{t.dashboard.quickActions}</h2>
-      <div className="grid grid-cols-3 gap-2">
-        {items.map(({ href, label, Icon }) => (
-          <Link key={href} href={href} className="flex flex-col items-center gap-2 rounded-2xl bg-surface border border-line px-2 py-4 text-center text-sm hover:border-accent">
-            <span className="grid size-11 place-items-center rounded-full bg-sky text-brand dark:text-accent"><Icon className="size-5" aria-hidden /></span>
-            {label}
-          </Link>
-        ))}
-      </div>
-      {pendingExpenses > 0 && can(ctx, "expenses.approve") && (
-        <Link href="/expenses?status=pending" className="mt-3 inline-block text-sm text-accent hover:underline">
-          {t.dashboard.pendingApprovals}: <span className="num">{n(pendingExpenses)}</span>
+      {c.pending_expenses > 0 && can(ctx, "expenses.approve") && (
+        <Link href="/expenses?status=pending" className="press mt-3 flex items-center gap-3 rounded-[22px] bg-surface p-4 card-shadow">
+          <IconChip icon={HandCoins} tint="rose" size={40} />
+          <span className="flex-1 font-medium">{t.dashboard.pendingApprovals}</span>
+          <span className="num rounded-full bg-sun px-2.5 py-0.5 text-sm font-bold text-white">{n(c.pending_expenses)}</span>
         </Link>
       )}
-    </section>
+
+      {finance && (
+        <>
+          <SectionTitle>{t.dashboard.monthlyChart}</SectionTitle>
+          <Card className="p-4">
+            {hasSeries ? <IncomeExpenseChart data={series} bnDigits={bn.bnDigits} />
+              : <p className="py-6 text-center text-sm text-ink-2">{t.dashboard.noData}</p>}
+          </Card>
+        </>
+      )}
+    </div>
+  );
+}
+
+function QuickActions({ ctx, t }: { ctx: AppContext; t: Dictionary }) {
+  const items: { show: boolean; href: string; label: string; icon: LucideIcon; tint: Tint }[] = [
+    { show: can(ctx, "students.create"), href: "/students/new", label: t.dashboard.qaAddStudent, icon: UserPlus, tint: "orange" },
+    { show: can(ctx, "attendance.create") || ctx.teachesSections.length > 0, href: "/attendance", label: t.dashboard.qaAttendance, icon: CalendarCheck, tint: "green" },
+    { show: can(ctx, "fees.collect"), href: "/fees", label: t.dashboard.qaCollect, icon: Wallet, tint: "teal" },
+    { show: can(ctx, "expenses.create"), href: "/expenses", label: t.dashboard.qaExpense, icon: HandCoins, tint: "rose" },
+    { show: can(ctx, "notices.manage") || ctx.teachesSections.length > 0, href: "/notices", label: t.dashboard.qaNotice, icon: Megaphone, tint: "violet" },
+    { show: can(ctx, "reports.view"), href: "/reports", label: t.dashboard.qaReport, icon: ChartColumn, tint: "blue" },
+  ];
+  const shown = items.filter((i) => i.show);
+  if (!shown.length) return null;
+  return (
+    <>
+      <SectionTitle>{t.dashboard.quickActions}</SectionTitle>
+      <div className="grid grid-cols-3 gap-3">
+        {shown.map((i) => <Tile key={i.href} href={i.href} icon={i.icon} tint={i.tint} label={i.label} />)}
+      </div>
+    </>
   );
 }
 
 export default function Page() {
   return (
-    <Suspense fallback={<div className="space-y-6"><Skeleton className="h-44" /><Skeleton className="h-48" /><Skeleton className="h-24" /></div>}>
+    <Suspense fallback={<div className="space-y-4"><Skeleton className="-mx-3 -mt-4 h-60 rounded-t-none" /><Skeleton className="h-40" /><div className="grid grid-cols-3 gap-3">{[0,1,2].map((i) => <Skeleton key={i} className="h-24" />)}</div></div>}>
       <Dashboard />
     </Suspense>
   );

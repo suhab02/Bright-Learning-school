@@ -30,8 +30,8 @@ export function SignupForm({ searchParams }: { searchParams: Promise<Record<stri
 
   // Signing up never grants access by itself: the account must match an invitation.
   return (
-    <Card className="p-6 shadow-xl shadow-brand/10">
-      <h2 className="text-xl font-semibold">{t.auth.signUpTitle}</h2>
+    <Card className="rise p-6">
+      <h2 className="text-[22px] font-bold">{t.auth.signUpTitle}</h2>
       {state === "sent" ? (
         <Notice tone="success" className="mt-4">{t.auth.checkEmail}</Notice>
       ) : (
