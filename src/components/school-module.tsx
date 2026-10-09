@@ -19,6 +19,9 @@ import { formatTaka } from "@/lib/format";
 import { Card, Notice } from "./ui";
 import { Chip, EmptyState, PageHeader, SectionTitle } from "./page";
 import { WorkflowForm, type FormField } from "./workflow-form";
+import { TeacherPhoto } from "./teacher-photo";
+import { GuardianMessage } from "./guardian-message";
+import { photoUrls } from "@/lib/data/photos";
 
 export type SchoolModuleKind =
   | "classes"
@@ -393,9 +396,11 @@ export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
         schoolRows("academic_years", ctx.schoolId),
       ]);
       const currentYear = years.find((y) => y.is_current);
+      const photos = await photoUrls(staff.map((r) => str(r, "photo_path")), "teacher-photos");
       content = (
         <>
           <Card className="mb-4 p-4">
+            <p className="mb-3 text-sm text-ink-2">{L("Save the teacher's details first, then use Add photo on their card. JPG, PNG or WebP; photos are reduced for fast uploads.", "আগে শিক্ষকের তথ্য সংরক্ষণ করুন, তারপর তার কার্ডে ছবি যোগ করুন। JPG, PNG বা WebP; দ্রুত আপলোডের জন্য ছবি ছোট করা হয়।")}</p>
             {details(
               L("Add staff / teacher", "কর্মী / শিক্ষক যোগ করুন"),
               form("staff", [
@@ -416,6 +421,7 @@ export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
           </Card>
           {list(staff, (r) => (
             <>
+              <TeacherPhoto staffId={str(r, "id")} schoolId={ctx.schoolId} name={named(r, locale)} src={photos[str(r, "photo_path")] ?? null} />
               <h2 className="text-lg font-bold">{named(r, locale)}</h2>
               <p className="text-sm text-ink-2">
                 {str(r, "staff_code")} · {str(r, "designation")} ·{" "}
@@ -829,6 +835,7 @@ export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
           <p className="text-sm">
             {str(r, "phone")} · {str(r, "email")}
           </p>
+          <GuardianMessage name={str(r, "full_name")} phone={str(r, "phone")} />
           <p className="mt-2 text-sm text-ink-2">
             {links
               .filter((l) => str(l, "guardian_id") === str(r, "id"))
