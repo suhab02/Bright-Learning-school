@@ -179,6 +179,7 @@ export async function saveWorkflow(
         break;
       }
       case "remove_timetable": {
+        if (ctx.role !== "admin" && ctx.role !== "super_admin") throw new Error("permission_denied");
         permit("academics.manage");
         await sameSchool("timetable_entries", id());
         check(
@@ -305,6 +306,7 @@ export async function saveWorkflow(
         break;
       }
       case "remove_assignment": {
+        if (ctx.role !== "admin" && ctx.role !== "super_admin") throw new Error("permission_denied");
         permit("teachers.manage");
         await sameSchool("teacher_assignments", id());
         check(
@@ -405,6 +407,7 @@ export async function saveWorkflow(
         const status = z
           .enum(["draft", "published", "archived"])
           .parse(value("status"));
+        if (status === "archived" && ctx.role !== "admin" && ctx.role !== "super_admin") throw new Error("permission_denied");
         check(
           await db
             .from("homework")
@@ -464,6 +467,7 @@ export async function saveWorkflow(
         break;
       }
       case "withdraw_notice": {
+        if (ctx.role !== "admin" && ctx.role !== "super_admin") throw new Error("permission_denied");
         permit("notices.manage");
         check(
           await db

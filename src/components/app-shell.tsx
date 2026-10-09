@@ -35,7 +35,7 @@ function isActive(pathname: string, href: string) {
 }
 
 export function AppShell({ school, user, yearName, nav, bottom, unread, children }: ShellProps) {
-  const { t } = useT();
+  const { t, locale } = useT();
   const pathname = usePathname();
   const [sheet, setSheet] = useState(false);
   const inBottom = new Set(bottom.map((b) => b.href));
@@ -70,7 +70,7 @@ export function AppShell({ school, user, yearName, nav, bottom, unread, children
           </div>
         </header>
 
-        <main className="flex-1 px-3 pt-4 pb-32">{children}</main>
+        <main className="flex-1 px-3 pt-4 pb-32"><Link href="/help" className="mb-3 flex min-h-11 items-center justify-between rounded-xl bg-surface px-3 text-sm"><span className="font-semibold">{user.role}</span><span className="text-brand">{locale === "bn" ? "আপনার অনুমতি ও সহায়তা →" : "Your access & help →"}</span></Link>{children}</main>
 
         {/* Floating bottom tab bar */}
         <div className={cn(FRAME, "no-print fixed inset-x-0 bottom-0 z-40 px-3 pb-[calc(10px+env(safe-area-inset-bottom))]")}>

@@ -21,6 +21,7 @@ import { Chip, EmptyState, PageHeader, SectionTitle } from "./page";
 import { WorkflowForm, type FormField } from "./workflow-form";
 import { TeacherPhoto } from "./teacher-photo";
 import { GuardianMessage } from "./guardian-message";
+import { AdminDelete } from "./admin-delete";
 import { photoUrls } from "@/lib/data/photos";
 
 export type SchoolModuleKind =
@@ -41,6 +42,8 @@ export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
     supabaseServer(),
   ]);
   const L = (en: string, bn: string) => (locale === "bn" ? bn : en);
+  const removalAdmin = ctx.role === "admin" || ctx.role === "super_admin";
+  const removalTable = { classes: "timetable_entries", teachers: "staff", staff: "", guardians: "guardians", homework: "homework", notices: "notices", exams: "exams", expenses: "expenses" }[kind];
   if (ctx.role === "guardian" && kind !== "notices")
     return <Notice tone="warn">{t.common.permissionDenied}</Notice>;
   const title = t.nav[kind];
@@ -96,12 +99,13 @@ export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
     field("name_en", "Name in English", "ইংরেজিতে নাম"),
     field("name_bn", "Name in Bangla", "বাংলায় নাম"),
   ];
-  const list = (rows: Row[], render: (r: Row) => React.ReactNode) =>
+  const list = (rows: Row[], render: (r: Row) => React.ReactNode, table = removalTable) =>
     rows.length ? (
       <div className="space-y-3">
         {rows.map((r) => (
           <Card key={str(r, "id")} className="p-4">
             {render(r)}
+            {removalAdmin && table && <AdminDelete table={table} id={str(r, "id")} name={named(r, locale) || str(r, "title") || str(r, "description") || L("Selected record", "নির্বাচিত রেকর্ড")} />}
           </Card>
         ))}
       </div>
@@ -176,6 +180,7 @@ export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
               >
                 {L("Open attendance", "হাজিরা খুলুন")}
               </Link>
+              {removalAdmin && <AdminDelete table="sections" id={s.id} name={`${locale === "bn" ? s.class_name_bn : s.class_name_en} (${s.name})`} />}
               {manager &&
                 details(
                   L("Edit section", "শাখা সম্পাদনা"),
@@ -200,9 +205,10 @@ export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
           <SectionTitle>{L("Subjects", "বিষয়")}</SectionTitle>
           <Card className="p-4">
             {subjects.map((s) => (
-              <p key={str(s, "id")} className="py-1">
+              <div key={str(s, "id")} className="py-1">
                 {named(s, locale)}
-              </p>
+                {removalAdmin && <AdminDelete table="subjects" id={str(s, "id")} name={named(s, locale)} />}
+              </div>
             ))}
           </Card>
           {manager && (
@@ -230,6 +236,7 @@ export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
                       nameFields.map((f) => ({ ...f, value: str(c, f.name) })),
                       { id: str(c, "id") },
                     )}
+                    {removalAdmin && <AdminDelete table="classes" id={str(c, "id")} name={named(c, locale)} />}
                   </div>
                 )),
               )}
@@ -257,6 +264,7 @@ export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
                   field("sort_order", "Order", "ক্রম", "number", true, "1"),
                 ]),
               )}
+              {removalAdmin && details(L("Manage lesson periods", "পিরিয়ড ব্যবস্থাপনা"), periods.map(p => <div key={str(p,"id")} className="my-3"><p>{named(p,locale)} · {str(p,"starts_at")}–{str(p,"ends_at")}</p><AdminDelete table="periods" id={str(p,"id")} name={named(p,locale)} /></div>))}
               {details(
                 L("Add timetable lesson", "রুটিনে পাঠ যোগ করুন"),
                 form("timetable", [
@@ -360,11 +368,6 @@ export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
                     locale,
                   )}
                 </p>
-                {manager &&
-                  details(
-                    L("Remove lesson", "পাঠ সরান"),
-                    form("remove_timetable", [], { id: str(r, "id") }),
-                  )}
               </>
             ),
           )}
@@ -381,7 +384,7 @@ export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
                 {str(r, "starts_on")} — {str(r, "ends_on")}
               </p>
             </>
-          ))}
+          ), "calendar_events")}
         </>
       );
       break;
@@ -464,10 +467,7 @@ export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
                         ) ?? {},
                         locale,
                       ) || L("All subjects", "সব বিষয়")}
-                      {details(
-                        L("Remove assignment", "দায়িত্ব সরান"),
-                        form("remove_assignment", [], { id: str(a, "id") }),
-                      )}
+                      {removalAdmin && <AdminDelete table="teacher_assignments" id={str(a,"id")} name={L("Teacher assignment", "শিক্ষকের দায়িত্ব")} />}
                     </li>
                   ))}
               </ul>
@@ -548,7 +548,7 @@ export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
                       options: [
                         { value: "active", label: L("Active", "সক্রিয়") },
                         { value: "on_leave", label: L("On leave", "ছুটিতে") },
-                        { value: "resigned", label: L("Resigned", "পদত্যাগ") },
+                        ...(removalAdmin ? [{ value: "resigned", label: L("Resigned", "পদত্যাগ") }] : []),
                       ],
                     },
                   ],
@@ -971,7 +971,7 @@ export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
                           value: "published",
                           label: L("Published", "প্রকাশিত"),
                         },
-                        { value: "archived", label: L("Archived", "সংরক্ষিত") },
+                        ...(removalAdmin ? [{ value: "archived", label: L("Archived", "সংরক্ষিত") }] : []),
                       ],
                     },
                   ],
@@ -1055,7 +1055,7 @@ export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
               {!r.is_published && (
                 <Chip>{L("Withdrawn", "প্রত্যাহার করা হয়েছে")}</Chip>
               )}
-              {manager &&
+              {manager && removalAdmin &&
                 r.is_published &&
                 details(
                   L("Withdraw notice", "নোটিশ প্রত্যাহার"),

@@ -9,6 +9,7 @@ import { Card, Notice, Skeleton } from "@/components/ui";
 import { PageHeader, SectionTitle } from "@/components/page";
 import { WorkflowForm } from "@/components/workflow-form";
 import { MarksRegister, type MarkRow } from "@/components/marks-register";
+import { AdminDelete } from "@/components/admin-delete";
 async function Exam({ params }: { params: Promise<{ id: string }> }) {
   const ctx = await requireContext();
   const [{ id }, { locale }, db] = await Promise.all([
@@ -139,6 +140,7 @@ async function Exam({ params }: { params: Promise<{ id: string }> }) {
             )}
           </SectionTitle>
           <Card className="p-4">
+            {(ctx.role === "admin" || ctx.role === "super_admin") && exam.status !== "published" && <AdminDelete table="exam_subjects" id={str(subject,"id")} name={L("Exam subject", "পরীক্ষার বিষয়")} />}
             {exam.status !== "published" &&
             allowed &&
             (can(ctx, "marks.enter") || ctx.role === "teacher") &&
