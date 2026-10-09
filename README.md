@@ -11,15 +11,16 @@ teachers and guardians.
 
 | Area | Status |
 |---|---|
-| Database: all tables, constraints, Row Level Security, audit log | ✅ built and tested |
-| Money rules: atomic + idempotent payments, receipts, reversals, refunds, expenses with approval, reports | ✅ in the database, tested (screens not built yet) |
-| Sign-in: Google + email/password, verification, password reset, invitations, secure first-owner setup | ✅ built and tested |
-| Phone-app shell, বাংলা / English switch, light/dark theme, school crest | ✅ |
-| Dashboard with real figures and setup checklist | ✅ |
-| Settings: every school detail, logo, colour, receipt prefix, working days, fee options | ✅ |
-| In-app notifications page | ✅ |
-| PWA install (manifest, icons, safe service worker) | ✅ |
-| Students, guardians, teachers, attendance, homework, exams, fee collection, reports, staff permissions, guardian portal screens | ⏳ next phases — these sections say "not built yet" in the app |
+| Database, row security, audit log and finance rules | Built |
+| Sign-in, invitations and secure first-owner setup | Built |
+| Phone layout, Bengali/English switch, school crest and installable PWA | Built |
+| Dashboard, editable school settings and notifications | Built |
+| Students: admission, search, editing, status and private photos | Built |
+| Fees: rates, billing, collection, receipts, discounts and reversals | Built |
+| Attendance: staff register and guardian monthly history | Added in `feature/attendance`; migration and deployment required |
+| Remaining parent portal, teachers, classes, homework, exams, reports, expenses, notices and staff management screens | Pending |
+
+Attendance setup and limitations: [docs/ATTENDANCE.md](docs/ATTENDANCE.md).
 
 ## Tests
 
@@ -29,8 +30,8 @@ supabase/local-stack/start.sh                      # local Supabase Auth + Postg
 npm run build && npm start &  npx playwright test  # 8 end-to-end browser tests (desktop + phone)
 ```
 
-Last run: all database tests and all 8 end-to-end tests passing. Not yet deployed to a real
-Supabase/Vercel project — that needs your accounts (see the deployment guide).
+The existing app is deployed separately. This branch has not been deployed.
+Run the browser suite against the local test stack before releasing it.
 
 ## Known limitations
 
