@@ -97,8 +97,9 @@ end $t$;
 -- ── T5: last super admin cannot be demoted ──
 do $t$ begin
   perform test.login('owner');
-  perform test.expect_error($$update school_members set role_key = 'admin' where user_id = test.id('owner')$$,
-                            'last Super Admin');
+  update school_members set role_key = 'admin' where user_id = test.id('owner');
+  assert is_super_admin(test.id('school')), 'owner was demoted by direct update';
+  perform test.expect_error($$select manage_school_member((select id from school_members where user_id=test.id('owner')), 'admin', 'active')$$, 'permission_denied');
 end $t$;
 
 -- ── setup academic data as admin ──
@@ -294,10 +295,8 @@ do $t$ declare ex uuid; es uuid; begin
     where s.id = test.id('secOne') and sub.name_en = 'Mathematics' returning id into es;
   insert into test.ids values ('exam', ex), ('es', es);
   perform test.login('teacher1');
-  perform test.expect_error(format($f$insert into marks(school_id, exam_subject_id, student_id, marks_obtained, entered_by)
-      values (%L, %L, %L, 120, auth.uid())$f$, test.id('school'), es, test.id('s1')), 'exceed full marks');
-  insert into marks(school_id, exam_subject_id, student_id, marks_obtained, entered_by)
-    values (test.id('school'), es, test.id('s1'), 87, auth.uid());
+  perform test.expect_error(format($f$select save_exam_marks(%L, jsonb_build_array(jsonb_build_object('student_id',%L,'marks_obtained',120,'is_absent',false)))$f$, es, test.id('s1')), 'invalid_marks');
+  perform save_exam_marks(es, jsonb_build_array(jsonb_build_object('student_id',test.id('s1'),'marks_obtained',87,'is_absent',false)));
   perform test.login('guardianA');
   assert (select count(*) from marks) = 0, 'guardian sees unpublished marks';
   perform test.login('admin');

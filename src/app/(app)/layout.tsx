@@ -8,6 +8,7 @@ import { bottomNav, visibleNav } from "@/lib/nav";
 import { toBnDigits } from "@/lib/format";
 import { AppShell } from "@/components/app-shell";
 import { Skeleton } from "@/components/ui";
+import { LiveUpdates } from "@/components/live-updates";
 
 async function Shell({ children }: { children: React.ReactNode }) {
   const ctx = await requireContext();
@@ -22,6 +23,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
 
   return (
     <LocaleProvider locale={locale}>
+      <LiveUpdates schoolId={ctx.schoolId} />
       <div style={{ ["--brand" as string]: brand }}>
         <AppShell
           school={{ name: schoolName(school, locale), place: schoolPlace(school), logoUrl: school.logoUrl }}

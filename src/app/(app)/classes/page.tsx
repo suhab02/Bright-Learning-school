@@ -1,2 +1,10 @@
-import { ComingSoon } from "@/components/coming-soon";
-export default function Page() { return <ComingSoon section="classes" />; }
+import { Suspense } from "react";
+import { SchoolModule } from "@/components/school-module";
+import { Skeleton } from "@/components/ui";
+export default function Page() {
+  return (
+    <Suspense fallback={<Skeleton className="h-96" />}>
+      <SchoolModule kind="classes" />
+    </Suspense>
+  );
+}
