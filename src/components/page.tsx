@@ -56,15 +56,15 @@ export function PageHeader({ title, subtitle, back, action }: {
   title: string; subtitle?: string; back?: string; action?: React.ReactNode;
 }) {
   return (
-    <div className="mb-4 flex items-end gap-3">
+    <div className="mb-6 flex flex-wrap items-end gap-3">
       {back && (
         <Link href={back} aria-label="Back" className="press grid size-11 shrink-0 place-items-center rounded-2xl bg-surface card-shadow">
           <ChevronLeft className="size-5" />
         </Link>
       )}
       <div className="min-w-0 flex-1">
-        <h1 className="truncate text-[26px] font-bold leading-tight tracking-tight">{title}</h1>
-        {subtitle && <p className="truncate text-sm text-ink-2">{subtitle}</p>}
+        <h1 className="text-[28px] font-semibold leading-tight tracking-[-0.035em] sm:text-[32px]">{title}</h1>
+        {subtitle && <p className="mt-2 text-sm text-ink-2">{subtitle}</p>}
       </div>
       {action}
     </div>
@@ -74,7 +74,7 @@ export function PageHeader({ title, subtitle, back, action }: {
 /** Brand gradient band that continues the top bar (place first on a page). */
 export function HeroBand({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <section className={cn("brand-band relative -mx-3 -mt-4 mb-5 overflow-hidden rounded-b-[32px] px-5 pb-7 pt-3", className)}>
+    <section className={cn("workspace-hero relative mb-7 overflow-hidden rounded-[24px] p-6 sm:p-8", className)}>
       {children}
     </section>
   );
@@ -82,8 +82,8 @@ export function HeroBand({ children, className }: { children: React.ReactNode; c
 
 export function SectionTitle({ children, action }: { children: React.ReactNode; action?: React.ReactNode }) {
   return (
-    <div className="mb-2.5 mt-6 flex items-center justify-between px-1">
-      <h2 className="text-[17px] font-bold">{children}</h2>
+    <div className="mb-4 mt-8 flex items-center justify-between gap-3">
+      <h2 className="text-[16px] font-semibold tracking-tight">{children}</h2>
       {action}
     </div>
   );
@@ -123,9 +123,9 @@ export function EmptyState({ icon, title, body, action }: { icon: LucideIcon; ti
 /** Square action tile with a coloured icon. */
 export function Tile({ href, icon, tint, label }: { href: string; icon: LucideIcon; tint: Tint; label: string }) {
   return (
-    <Link href={href} className="press flex flex-col items-center gap-2 rounded-[22px] bg-surface px-1 pb-3 pt-4 text-center card-shadow">
-      <IconChip icon={icon} tint={tint} size={48} />
-      <span className="text-[13px] font-medium leading-tight">{label}</span>
+    <Link href={href} className="press flex flex-col items-center gap-3 rounded-2xl border border-line bg-surface px-2 py-5 text-center hover:border-accent/30 sm:flex-row sm:px-4 sm:text-left">
+      <IconChip icon={icon} tint={tint} size={38} className="rounded-xl" />
+      <span className="text-xs font-medium leading-snug sm:text-[13px]">{label}</span>
     </Link>
   );
 }

@@ -4,7 +4,7 @@ import { cn } from "@/lib/cn";
 type BtnVariant = "primary" | "secondary" | "ghost" | "danger" | "paid" | "light";
 const btn: Record<BtnVariant, string> = {
   primary: "bg-brand text-white shadow-[0_8px_20px_-10px_var(--brand)] hover:brightness-110",
-  secondary: "bg-surface text-ink card-shadow hover:bg-surface-2",
+  secondary: "border border-line bg-surface text-ink hover:bg-surface-2",
   ghost: "text-ink-2 hover:bg-surface-2 hover:text-ink",
   danger: "bg-danger text-white hover:brightness-110",
   paid: "bg-paid text-white shadow-[0_8px_20px_-10px_var(--paid)] hover:brightness-105",
@@ -17,7 +17,7 @@ export const Button = forwardRef<HTMLButtonElement,
     return (
       <button ref={ref} {...p}
         className={cn(
-          "press inline-flex items-center justify-center gap-2 rounded-2xl font-semibold disabled:opacity-50 disabled:pointer-events-none select-none",
+          "press inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold disabled:opacity-50 disabled:pointer-events-none select-none",
           size === "sm" && "h-9 px-3.5 text-sm rounded-xl",
           size === "md" && "h-12 px-5",
           size === "lg" && "h-14 px-6 text-[17px]",
@@ -25,7 +25,7 @@ export const Button = forwardRef<HTMLButtonElement,
     );
   });
 
-const field = "w-full rounded-2xl border border-transparent bg-surface-2 px-4 text-[16px] text-ink placeholder:text-ink-2/55 transition focus:border-accent focus:bg-surface focus:outline-none focus:ring-4 focus:ring-accent/15 disabled:opacity-60 aria-invalid:border-danger aria-invalid:ring-danger/15";
+const field = "w-full rounded-xl border border-line bg-surface px-4 text-[16px] text-ink placeholder:text-ink-2/55 transition focus:border-accent focus:bg-surface focus:outline-none focus:ring-4 focus:ring-accent/10 disabled:opacity-60 aria-invalid:border-danger aria-invalid:ring-danger/15";
 
 export const Input = forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
   function Input({ className, ...p }, ref) {
@@ -59,7 +59,7 @@ export function Field({ label, hint, error, children, className, htmlFor }: {
 }
 
 export function Card({ className, ...p }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div {...p} className={cn("rounded-[22px] bg-surface card-shadow", className)} />;
+  return <div {...p} className={cn("rounded-2xl border border-line bg-surface card-shadow", className)} />;
 }
 
 export function Skeleton({ className }: { className?: string }) {

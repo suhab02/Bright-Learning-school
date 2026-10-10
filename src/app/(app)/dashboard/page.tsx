@@ -96,27 +96,26 @@ async function Dashboard() {
 
   return (
     <div>
-      <h1 className="sr-only">{t.nav.dashboard}</h1>
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-3"><div><p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-2">{locale === "bn" ? "স্কুলের সারসংক্ষেপ" : "School overview"}</p><h1 className="text-[30px] font-semibold tracking-[-0.04em]">{t.nav.dashboard}</h1></div><span className="rounded-full border border-line bg-surface px-3 py-1.5 text-xs text-ink-2">{formatDate(today, locale, bn)}</span></div>
       <HeroBand>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={school.logoUrl} alt="" aria-hidden className="pointer-events-none absolute -right-8 -top-2 size-44 opacity-[0.09]" />
-        <p className="text-white/75">{greeting},</p>
-        <p className="mt-0.5 text-[28px] font-bold leading-tight tracking-tight">{displayName}</p>
-        <p className="mt-2 inline-flex rounded-full bg-white/12 px-3 py-1 text-[13px] ring-1 ring-white/15">
-          {formatDate(today, locale, bn)}
-        </p>
+        <img src={school.logoUrl} alt="" aria-hidden className="pointer-events-none absolute -right-7 -top-6 size-48 opacity-[0.045]" />
+        <div className="relative flex flex-col gap-7 md:flex-row md:items-center md:justify-between"><div>
+        <p className="text-sm text-white/55">{greeting},</p>
+        <p className="mt-2 text-[28px] font-medium leading-tight tracking-[-0.035em] sm:text-[34px]">{displayName}</p>
+        <p className="mt-3 max-w-sm text-xs leading-relaxed text-white/55">{locale === "bn" ? "স্কুলের আজকের তথ্য ও আপনার দৈনন্দিন কাজ, এক নজরে।" : "Your school at a glance. Everything you need for the day ahead."}</p></div>
         {finance ? (
-          <div className="mt-5 grid grid-cols-2 gap-3">
-            <div className="rounded-[20px] bg-white/10 p-4 ring-1 ring-white/15 backdrop-blur">
+          <div className="grid grid-cols-2 gap-3 md:w-[340px] md:shrink-0">
+            <div className="rounded-2xl border border-white/10 bg-white/4 p-4">
               <p className="text-[13px] text-white/75">{t.dashboard.collectedToday}</p>
               <p className="num mt-1 text-[22px] font-bold">{money(day?.collected_gross)}</p>
             </div>
-            <div className="rounded-[20px] bg-white/10 p-4 ring-1 ring-white/15 backdrop-blur">
+            <div className="rounded-2xl border border-white/10 bg-white/4 p-4">
               <p className="text-[13px] text-white/75">{t.nav.attendance}</p>
               <p className="num mt-1 text-[22px] font-bold">{attendancePct !== null ? `${n(attendancePct)}%` : "—"}</p>
             </div>
           </div>
-        ) : null}
+        ) : null}</div>
       </HeroBand>
 
       {setupOpen && (
@@ -145,19 +144,19 @@ async function Dashboard() {
       <QuickActions ctx={ctx} t={t} />
 
       <SectionTitle>{t.dashboard.today}</SectionTitle>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
         {stats.map((x) => {
           const inner = (
             <>
               <IconChip icon={x.icon} tint={x.tint} size={40} />
-              <p className="num mt-3 truncate text-[22px] font-bold leading-none">{x.value}</p>
+              <p className="num mt-4 truncate text-[27px] font-semibold leading-none tracking-tight">{x.value}</p>
               <p className="mt-1.5 text-[13px] font-medium text-ink-2">{x.label}</p>
               {x.sub && <p className="num mt-0.5 truncate text-xs text-ink-2/80">{x.sub}</p>}
             </>
           );
           return x.href
-            ? <Link key={x.label} href={x.href} className="press block rounded-[22px] bg-surface p-4 card-shadow">{inner}</Link>
-            : <div key={x.label} className="rounded-[22px] bg-surface p-4 card-shadow">{inner}</div>;
+            ? <Link key={x.label} href={x.href} className="press block rounded-2xl border border-line bg-surface p-5 hover:border-accent/30">{inner}</Link>
+            : <div key={x.label} className="rounded-2xl border border-line bg-surface p-5">{inner}</div>;
         })}
       </div>
       {finance && (month?.unverified_wallet_bank ?? 0) > 0 && (
@@ -201,7 +200,7 @@ function QuickActions({ ctx, t }: { ctx: AppContext; t: Dictionary }) {
   return (
     <>
       <SectionTitle>{t.dashboard.quickActions}</SectionTitle>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-2 sm:grid-cols-2 sm:gap-3 xl:grid-cols-3">
         {shown.map((i) => <Tile key={i.href} href={i.href} icon={i.icon} tint={i.tint} label={i.label} />)}
       </div>
     </>
