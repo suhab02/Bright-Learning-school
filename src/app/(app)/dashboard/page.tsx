@@ -100,12 +100,12 @@ async function Dashboard() {
       <HeroBand className="dashboard-welcome">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={school.logoUrl} alt="" aria-hidden className="pointer-events-none absolute -right-7 -top-6 size-48 opacity-[0.045]" />
-        <div className="relative flex flex-col gap-7 md:flex-row md:items-center md:justify-between"><div>
+        <div className="relative flex flex-col gap-7"><div>
         <p className="text-sm text-white/55">{greeting},</p>
-        <p className="mt-2 text-[28px] font-medium leading-tight tracking-[-0.035em] sm:text-[34px]">{displayName}</p>
+        <p className="mt-2 text-[28px] font-medium leading-tight tracking-[-0.035em]">{displayName}</p>
         <p className="mt-3 max-w-sm text-xs leading-relaxed text-white/55">{locale === "bn" ? "স্কুলের আজকের তথ্য ও আপনার দৈনন্দিন কাজ, এক নজরে।" : "Your school at a glance. Everything you need for the day ahead."}</p></div>
         {finance ? (
-          <div className="grid grid-cols-2 gap-3 md:w-[340px] md:shrink-0">
+          <div className="grid grid-cols-2 gap-3">
             <div className="rounded-2xl border border-white/10 bg-white/4 p-4">
               <p className="text-[13px] text-white/75">{t.dashboard.collectedToday}</p>
               <p className="num mt-1 text-[22px] font-bold">{money(day?.collected_gross)}</p>
@@ -119,7 +119,7 @@ async function Dashboard() {
       </HeroBand>
 
       {setupOpen && (
-        <Card className="rise p-5">
+        <Card className="dashboard-setup rise p-4">
           <details>
           <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
             <span className="flex items-center gap-2 text-sm font-semibold"><CircleCheck className="size-4 text-brand" />{t.dashboard.setupTitle}<ChevronRight className="size-4 text-ink-2" /></span>
@@ -140,17 +140,17 @@ async function Dashboard() {
         </Card>
       )}
 
-      <QuickActions ctx={ctx} t={t} />
+      <div className="dashboard-actions"><QuickActions ctx={ctx} t={t} /></div>
 
       <SectionTitle>{t.dashboard.today}</SectionTitle>
-      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3">
         {stats.map((x) => {
           const inner = (
             <>
               <IconChip icon={x.icon} tint={x.tint} size={40} />
-              <p className="dashboard-stat-value num mt-4 sm:truncate text-[27px] font-semibold leading-none tracking-tight">{x.value}</p>
+              <p className="dashboard-stat-value num mt-4 text-[27px] font-semibold leading-none tracking-tight">{x.value}</p>
               <p className="mt-1.5 text-[13px] font-medium text-ink-2">{x.label}</p>
-              {x.sub && <p className="num mt-0.5 truncate text-xs text-ink-2/80">{x.sub}</p>}
+              {x.sub && <p className="num mt-1 text-xs text-ink-2/80">{x.sub}</p>}
             </>
           );
           return x.href
@@ -199,7 +199,7 @@ function QuickActions({ ctx, t }: { ctx: AppContext; t: Dictionary }) {
   return (
     <>
       <SectionTitle>{t.dashboard.quickActions}</SectionTitle>
-      <div className="dashboard-shortcuts grid grid-cols-3 gap-2 sm:grid-cols-2 sm:gap-3 xl:grid-cols-3">
+      <div className="dashboard-shortcuts grid grid-cols-3 gap-2">
         {shown.map((i) => <Tile key={i.href} href={i.href} icon={i.icon} tint={i.tint} label={i.label} />)}
       </div>
     </>

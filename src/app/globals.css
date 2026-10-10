@@ -142,7 +142,7 @@ details[open] > summary { margin-bottom: 10px; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
 
 /* Phone design inspired by the supplied learning and wallet app references. */
-@media screen and (max-width: 639px) {
+@media screen {
   .mobile-school {
     --brand: #5146da;
     --accent: #6154e8;
@@ -221,7 +221,7 @@ details[open] > summary { margin-bottom: 10px; }
   .mobile-school .dashboard-stat:nth-child(4n + 1) { background: color-mix(in oklab, var(--surface) 85%, var(--t-blue)); }
   .mobile-school .dashboard-stat:nth-child(4n + 2) { background: color-mix(in oklab, var(--surface) 85%, var(--t-violet)); }
   .mobile-school .dashboard-stat-value {
-    font-size: clamp(19px, 5.6vw, 26px);
+    font-size: 26px;
     overflow-wrap: anywhere;
     line-height: 1.2;
     color: var(--brand);
@@ -229,7 +229,7 @@ details[open] > summary { margin-bottom: 10px; }
   }
   .dark .mobile-school .dashboard-stat-value { color: var(--accent); }
   .mobile-school .mobile-tabbar {
-    max-width: none;
+    max-width: 480px;
     padding: 0 12px calc(8px + env(safe-area-inset-bottom));
     background: linear-gradient(transparent, var(--bg) 45%);
   }
@@ -259,4 +259,43 @@ details[open] > summary { margin-bottom: 10px; }
   .print-sheet { box-shadow: none !important; border: 1px solid #d5dbe3; border-radius: 12px; }
   .print-sheet * { color: #0f1f36 !important; }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* Reference-inspired mobile canvas; the same app composition at every viewport. */
+@media screen {
+  body:has(.mobile-school) { background: #e8eafa; }
+  .dark body:has(.mobile-school) { background: #080b18; }
+  .mobile-school { min-height: 100dvh; box-shadow: 0 0 80px rgb(49 42 111 / .12); }
+  .mobile-school .mobile-topbar { padding: 0 20px; }
+  .mobile-school #school-content { padding-inline: 20px; }
+  .mobile-school .dashboard-heading { gap: 8px; margin-top: 6px; }
+  .mobile-school .dashboard-heading > div > p { font-size: 9px; letter-spacing: .15em; }
+  .mobile-school .dashboard-heading > span { padding: 6px 8px; font-size: 10px; }
+  .mobile-school .dashboard-heading h1 { font-size: 28px; }
+  .mobile-school .dashboard-welcome { padding: 24px; border-radius: 28px; margin-bottom: 18px; }
+  .mobile-school .dashboard-welcome::before {
+    content: ""; position: absolute; width: 220px; height: 220px; border: 34px solid rgb(255 255 255 / .07);
+    border-radius: 50%; top: -110px; right: -95px; pointer-events: none;
+  }
+  .mobile-school .dashboard-welcome .grid { width: 100%; }
+  .mobile-school .dashboard-welcome .grid > div { border-radius: 18px; min-width: 0; }
+  .mobile-school .dashboard-welcome .num { overflow-wrap: anywhere; }
+  .mobile-school .dashboard-setup { background: var(--sky); border: 0; box-shadow: none; }
+  .mobile-school .dashboard-setup summary { min-height: 32px; }
+  .mobile-school .dashboard-actions { margin-top: 22px; padding: 0 14px 8px; border-radius: 26px; background: var(--surface); box-shadow: var(--shadow-card); }
+  .mobile-school .dashboard-actions > div:first-child { margin: 0; padding: 18px 4px 4px; }
+  .mobile-school .dashboard-shortcuts { gap: 4px 8px; }
+  .mobile-school .school-shortcut { min-height: 100px; }
+  .mobile-school .school-shortcut > span:first-child { border-radius: 17px; }
+  .mobile-school .dashboard-stat { min-height: 160px; border: 0; position: relative; overflow: hidden; }
+  .mobile-school .dashboard-stat:nth-child(4n + 1) { background: #e7edff; }
+  .mobile-school .dashboard-stat:nth-child(4n + 2) { background: #f1e8ff; }
+  .mobile-school .dashboard-stat:nth-child(4n + 3) { background: #e0f5ef; }
+  .mobile-school .dashboard-stat:nth-child(4n + 4) { background: #fff0e0; }
+  .dark .mobile-school .dashboard-stat { background: var(--surface); }
+  .mobile-school .dashboard-stat > span:first-child { border-radius: 50%; background: rgb(255 255 255 / .65); }
+  .dark .mobile-school .dashboard-stat > span:first-child { background: var(--surface-2); }
+  .mobile-school .mobile-tabbar { padding-inline: 12px; }
+  .mobile-school .mobile-tabs { border-radius: 24px; }
+  .mobile-school .mobile-tabs a[aria-current="page"] > svg { stroke-width: 2.5; }
 }

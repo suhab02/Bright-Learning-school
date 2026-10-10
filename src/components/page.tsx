@@ -63,7 +63,7 @@ export function PageHeader({ title, subtitle, back, action }: {
         </Link>
       )}
       <div className="min-w-0 flex-1">
-        <h1 className="text-[28px] font-semibold leading-tight tracking-[-0.035em] sm:text-[32px]">{title}</h1>
+        <h1 className="text-[28px] font-semibold leading-tight tracking-[-0.035em]">{title}</h1>
         {subtitle && <p className="mt-2 text-sm text-ink-2">{subtitle}</p>}
       </div>
       {action}
@@ -74,7 +74,7 @@ export function PageHeader({ title, subtitle, back, action }: {
 /** Brand gradient band that continues the top bar (place first on a page). */
 export function HeroBand({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <section className={cn("workspace-hero relative mb-6 overflow-hidden rounded-[24px] p-5 sm:mb-7 sm:p-8", className)}>
+    <section className={cn("workspace-hero relative mb-6 overflow-hidden rounded-[24px] p-5", className)}>
       {children}
     </section>
   );
@@ -123,9 +123,9 @@ export function EmptyState({ icon, title, body, action }: { icon: LucideIcon; ti
 /** Square action tile with a coloured icon. */
 export function Tile({ href, icon, tint, label }: { href: string; icon: LucideIcon; tint: Tint; label: string }) {
   return (
-    <Link href={href} className="school-shortcut press flex flex-col items-center gap-3 rounded-2xl border border-line bg-surface px-2 py-5 text-center hover:border-accent/30 sm:flex-row sm:px-4 sm:text-left">
+    <Link href={href} className="school-shortcut press flex flex-col items-center gap-3 rounded-2xl border border-line bg-surface px-2 py-5 text-center hover:border-accent/30">
       <IconChip icon={icon} tint={tint} size={38} className="rounded-xl" />
-      <span className="text-xs font-medium leading-snug sm:text-[13px]">{label}</span>
+      <span className="text-xs font-medium leading-snug">{label}</span>
     </Link>
   );
 }
