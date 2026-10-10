@@ -59,7 +59,7 @@ export function Field({ label, hint, error, children, className, htmlFor }: {
 }
 
 export function Card({ className, ...p }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div {...p} className={cn("rounded-2xl border border-line bg-surface card-shadow", className)} />;
+  return <div {...p} className={cn("school-card rounded-2xl border border-line bg-surface card-shadow", className)} />;
 }
 
 export function Skeleton({ className }: { className?: string }) {

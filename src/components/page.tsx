@@ -123,7 +123,7 @@ export function EmptyState({ icon, title, body, action }: { icon: LucideIcon; ti
 /** Square action tile with a coloured icon. */
 export function Tile({ href, icon, tint, label }: { href: string; icon: LucideIcon; tint: Tint; label: string }) {
   return (
-    <Link href={href} className="press flex flex-col items-center gap-3 rounded-2xl border border-line bg-surface px-2 py-5 text-center hover:border-accent/30 sm:flex-row sm:px-4 sm:text-left">
+    <Link href={href} className="school-shortcut press flex flex-col items-center gap-3 rounded-2xl border border-line bg-surface px-2 py-5 text-center hover:border-accent/30 sm:flex-row sm:px-4 sm:text-left">
       <IconChip icon={icon} tint={tint} size={38} className="rounded-xl" />
       <span className="text-xs font-medium leading-snug sm:text-[13px]">{label}</span>
     </Link>
