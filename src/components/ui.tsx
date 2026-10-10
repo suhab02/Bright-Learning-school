@@ -18,7 +18,7 @@ export const Button = forwardRef<HTMLButtonElement,
       <button ref={ref} {...p}
         className={cn(
           "press inline-flex items-center justify-center gap-2 rounded-xl text-sm font-semibold disabled:opacity-50 disabled:pointer-events-none select-none",
-          size === "sm" && "h-9 px-3.5 text-sm rounded-xl",
+          size === "sm" && "min-h-11 px-3.5 text-sm rounded-xl sm:min-h-9",
           size === "md" && "h-12 px-5",
           size === "lg" && "h-14 px-6 text-[17px]",
           btn[variant], className)} />
@@ -59,7 +59,7 @@ export function Field({ label, hint, error, children, className, htmlFor }: {
 }
 
 export function Card({ className, ...p }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div {...p} className={cn("rounded-2xl border border-line bg-surface card-shadow", className)} />;
+  return <div {...p} className={cn("school-card rounded-2xl border border-line bg-surface card-shadow", className)} />;
 }
 
 export function Skeleton({ className }: { className?: string }) {

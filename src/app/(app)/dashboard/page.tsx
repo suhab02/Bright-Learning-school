@@ -95,9 +95,9 @@ async function Dashboard() {
   ];
 
   return (
-    <div>
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-3"><div><p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-2">{locale === "bn" ? "স্কুলের সারসংক্ষেপ" : "School overview"}</p><h1 className="text-[30px] font-semibold tracking-[-0.04em]">{t.nav.dashboard}</h1></div><span className="rounded-full border border-line bg-surface px-3 py-1.5 text-xs text-ink-2">{formatDate(today, locale, bn)}</span></div>
-      <HeroBand>
+    <div className="mobile-dashboard">
+      <div className="dashboard-heading mb-6 flex flex-wrap items-end justify-between gap-3"><div><p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-2">{locale === "bn" ? "স্কুলের সারসংক্ষেপ" : "School overview"}</p><h1 className="text-[30px] font-semibold tracking-[-0.04em]">{t.nav.dashboard}</h1></div><span className="rounded-full border border-line bg-surface px-3 py-1.5 text-xs text-ink-2">{formatDate(today, locale, bn)}</span></div>
+      <HeroBand className="dashboard-welcome">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={school.logoUrl} alt="" aria-hidden className="pointer-events-none absolute -right-7 -top-6 size-48 opacity-[0.045]" />
         <div className="relative flex flex-col gap-7 md:flex-row md:items-center md:justify-between"><div>
@@ -148,14 +148,14 @@ async function Dashboard() {
           const inner = (
             <>
               <IconChip icon={x.icon} tint={x.tint} size={40} />
-              <p className="num mt-4 truncate text-[27px] font-semibold leading-none tracking-tight">{x.value}</p>
+              <p className="dashboard-stat-value num mt-4 sm:truncate text-[27px] font-semibold leading-none tracking-tight">{x.value}</p>
               <p className="mt-1.5 text-[13px] font-medium text-ink-2">{x.label}</p>
               {x.sub && <p className="num mt-0.5 truncate text-xs text-ink-2/80">{x.sub}</p>}
             </>
           );
           return x.href
-            ? <Link key={x.label} href={x.href} className="press block rounded-2xl border border-line bg-surface p-5 hover:border-accent/30">{inner}</Link>
-            : <div key={x.label} className="rounded-2xl border border-line bg-surface p-5">{inner}</div>;
+            ? <Link key={x.label} href={x.href} className="dashboard-stat press block rounded-2xl border border-line bg-surface p-5 hover:border-accent/30">{inner}</Link>
+            : <div key={x.label} className="dashboard-stat rounded-2xl border border-line bg-surface p-5">{inner}</div>;
         })}
       </div>
       {finance && (month?.unverified_wallet_bank ?? 0) > 0 && (
@@ -199,7 +199,7 @@ function QuickActions({ ctx, t }: { ctx: AppContext; t: Dictionary }) {
   return (
     <>
       <SectionTitle>{t.dashboard.quickActions}</SectionTitle>
-      <div className="grid grid-cols-3 gap-2 sm:grid-cols-2 sm:gap-3 xl:grid-cols-3">
+      <div className="dashboard-shortcuts grid grid-cols-3 gap-2 sm:grid-cols-2 sm:gap-3 xl:grid-cols-3">
         {shown.map((i) => <Tile key={i.href} href={i.href} icon={i.icon} tint={i.tint} label={i.label} />)}
       </div>
     </>

@@ -44,7 +44,7 @@ export function AppShell({ school, user, yearName, nav, bottom, unread, children
   const current = nav.find((n) => isActive(pathname, n.href));
 
   return (
-    <div className="min-h-dvh bg-bg">
+    <div className="mobile-school min-h-dvh bg-bg">
       <a href="#school-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-xl focus:bg-surface focus:p-3">{locale === "bn" ? "মূল অংশে যান" : "Skip to content"}</a>
       <aside className="workspace-sidebar no-print fixed inset-y-0 left-0 z-40 hidden w-[252px] flex-col lg:flex">
         <Link href="/" className="flex items-center gap-3 px-6 pb-7 pt-8" aria-label={school.name}>
@@ -64,7 +64,7 @@ export function AppShell({ school, user, yearName, nav, bottom, unread, children
       <div className="relative flex min-h-dvh flex-col lg:ml-[252px]">
         {/* Top app bar */}
         <header className="workspace-header no-print sticky top-0 z-30 border-b border-line pt-[env(safe-area-inset-top)]">
-          <div className="mx-auto flex h-[76px] max-w-[1280px] items-center gap-3 px-5 lg:px-10">
+          <div className="mobile-topbar mx-auto flex h-16 max-w-[1280px] items-center gap-2 px-4 sm:gap-3 lg:h-[76px] lg:px-10">
             <Link href="/" className="flex min-w-0 flex-1 items-center gap-2.5 lg:hidden" aria-label={school.name}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={school.logoUrl} alt="" className="size-10 shrink-0 rounded-xl border border-line bg-white object-contain p-1" />
@@ -88,18 +88,18 @@ export function AppShell({ school, user, yearName, nav, bottom, unread, children
           </div>
         </header>
 
-        <main id="school-content" className="mx-auto w-full max-w-[1280px] flex-1 px-5 pb-28 pt-5 sm:px-7 lg:px-10 lg:pb-10 lg:pt-7"><div className="mb-6 flex flex-wrap items-center justify-between gap-2 text-xs"><span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 font-medium text-ink-2"><ShieldCheck className="size-3.5 text-brand" />{user.role}</span><Link href="/help" className="inline-flex min-h-9 items-center gap-1.5 font-medium text-ink-2 hover:text-brand">{locale === "bn" ? "আপনার অনুমতি ও সহায়তা" : "Your access & help"}<ChevronRight className="size-3.5" /></Link></div>{children}</main>
+        <main id="school-content" className="mx-auto w-full min-w-0 max-w-[1280px] flex-1 px-4 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-4 sm:px-7 lg:px-10 lg:pb-10 lg:pt-7"><div className="mb-4 flex flex-wrap items-center justify-between gap-2 text-xs lg:mb-6"><span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 font-medium text-ink-2"><ShieldCheck className="size-3.5 text-brand" />{user.role}</span><Link href="/help" className="inline-flex min-h-11 items-center gap-1.5 font-medium text-ink-2 hover:text-brand">{locale === "bn" ? "আপনার অনুমতি ও সহায়তা" : "Your access & help"}<ChevronRight className="size-3.5" /></Link></div>{children}</main>
 
         {/* Floating bottom tab bar */}
-        <div className="no-print fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[640px] px-3 pb-[calc(10px+env(safe-area-inset-bottom))] lg:hidden">
+        <div className="mobile-tabbar no-print fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[640px] px-3 pb-[calc(10px+env(safe-area-inset-bottom))] lg:hidden">
           <nav aria-label={t.nav.menu}
-            className="float-shadow grid rounded-[20px] bg-surface/95 p-1.5 backdrop-blur-xl ring-1 ring-line"
+            className="mobile-tabs float-shadow grid rounded-[20px] bg-surface/95 p-1.5 backdrop-blur-xl ring-1 ring-line"
             style={{ gridTemplateColumns: `repeat(${bottom.length + (more.length ? 1 : 0)}, minmax(0,1fr))` }}>
             {bottom.map((i) => {
               const active = isActive(pathname, i.href);
               return (
                 <Link key={i.href} href={i.href} aria-current={active ? "page" : undefined}
-                  className={cn("press flex flex-col items-center gap-1 rounded-[14px] py-2 text-[10px] font-semibold transition-colors",
+                  className={cn("press flex min-h-14 flex-col items-center justify-center gap-1 rounded-[14px] py-2 text-[11px] font-semibold transition-colors",
                     active ? "bg-sky text-brand" : "text-ink-2 hover:text-ink")}>
                   <NavIcon name={i.icon} className="size-[22px]" />
                   <span className="max-w-full truncate px-1">{t.nav[i.key]}</span>
@@ -107,8 +107,8 @@ export function AppShell({ school, user, yearName, nav, bottom, unread, children
               );
             })}
             {more.length > 0 && (
-              <button onClick={() => setSheet(true)} aria-expanded={sheet}
-                className={cn("press flex flex-col items-center gap-1 rounded-[14px] py-2 text-[10px] font-semibold",
+              <button onClick={() => setSheet(true)} aria-expanded={sheet} aria-haspopup="dialog"
+                className={cn("press flex min-h-14 flex-col items-center justify-center gap-1 rounded-[14px] py-2 text-[11px] font-semibold",
                   moreActive ? "bg-sky text-brand" : "text-ink-2 hover:text-ink")}>
                 <LayoutGrid className="size-[22px]" aria-hidden />
                 {t.nav.more}
@@ -120,7 +120,7 @@ export function AppShell({ school, user, yearName, nav, bottom, unread, children
         {/* "More" sheet: every other section as a big-tap grid */}
         {sheet && (
           <MenuSheet title={t.nav.more} onClose={() => setSheet(false)}>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 gap-3 min-[380px]:grid-cols-3">
                 {more.map((i) => (
                   <Link key={i.href} href={i.href} onClick={() => setSheet(false)}
                     className={cn("press flex flex-col items-center gap-2 rounded-[22px] bg-surface px-1 pb-3 pt-4 text-center text-[13px] font-medium card-shadow",

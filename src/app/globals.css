@@ -141,6 +141,112 @@ details[open] > summary { margin-bottom: 10px; }
 
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
 
+/* Phone design inspired by the supplied learning and wallet app references. */
+@media screen and (max-width: 639px) {
+  .mobile-school {
+    --brand: #5146da;
+    --accent: #6154e8;
+    --brand-deep: #3930aa;
+    --sky: #eeecff;
+    --bg: #f5f6fc;
+    --line: #e8e9f3;
+    --ink: #252743;
+    --ink-2: #656982;
+    --shadow-card: 0 6px 22px -12px rgb(61 53 140 / .18);
+    background: radial-gradient(ellipse at 95% 0%, #e6e7ff 0%, transparent 38%), var(--bg);
+  }
+  .dark .mobile-school {
+    --brand: #6960e8;
+    --accent: #a39bff;
+    --brand-deep: #3930aa;
+    --sky: #27234b;
+    --bg: #101326;
+    --line: #2b2d49;
+    --ink: #f0efff;
+    --ink-2: #b5b6cd;
+    background: var(--bg);
+  }
+  .mobile-school .workspace-header {
+    border-bottom: 0;
+    background: color-mix(in oklab, var(--bg) 92%, transparent);
+  }
+  .mobile-school .mobile-topbar { height: 72px; }
+  .mobile-school #school-content { padding-top: 0; }
+  .mobile-school #school-content > div:first-child { margin-bottom: 12px; }
+  .mobile-school .school-card {
+    border-radius: 24px;
+    box-shadow: var(--shadow-card);
+  }
+  .mobile-school .workspace-hero {
+    background:
+      radial-gradient(circle at 100% 10%, rgb(255 255 255 / .18), transparent 45%),
+      linear-gradient(125deg, #4d43dd 0%, #6858ee 55%, #7799fa 100%);
+    border: 0;
+    border-radius: 26px;
+    box-shadow: 0 14px 28px -16px rgb(81 70 218 / .6);
+  }
+  .mobile-school .workspace-hero .text-white\/55 { color: rgb(255 255 255 / .85); }
+  .mobile-school .dashboard-heading { margin-bottom: 16px; align-items: center; }
+  .mobile-school .dashboard-heading h1 { font-size: 26px; }
+  .mobile-school .dashboard-welcome { padding: 24px 20px; }
+  .mobile-school .dashboard-welcome > div { gap: 20px; }
+  .mobile-school .dashboard-welcome .grid > div {
+    background: rgb(255 255 255 / .13);
+    border-color: rgb(255 255 255 / .2);
+    padding: 12px;
+  }
+  .mobile-school .dashboard-shortcuts { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 8px; }
+  .mobile-school .school-shortcut {
+    min-height: 104px;
+    padding: 12px 4px;
+    border: 0;
+    background: transparent;
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+  .mobile-school .school-shortcut > span:first-child {
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 18px;
+    box-shadow: 0 5px 12px -8px currentColor;
+  }
+  .mobile-school .school-shortcut > span:last-child { font-size: 12px; font-weight: 600; }
+  .mobile-school .dashboard-stat {
+    min-width: 0;
+    padding: 16px;
+    border-radius: 24px;
+    box-shadow: var(--shadow-card);
+  }
+  .mobile-school .dashboard-stat:nth-child(4n + 1) { background: color-mix(in oklab, var(--surface) 85%, var(--t-blue)); }
+  .mobile-school .dashboard-stat:nth-child(4n + 2) { background: color-mix(in oklab, var(--surface) 85%, var(--t-violet)); }
+  .mobile-school .dashboard-stat-value {
+    font-size: clamp(19px, 5.6vw, 26px);
+    overflow-wrap: anywhere;
+    line-height: 1.2;
+    color: var(--brand);
+    margin-top: 14px;
+  }
+  .dark .mobile-school .dashboard-stat-value { color: var(--accent); }
+  .mobile-school .mobile-tabbar {
+    max-width: none;
+    padding: 0 12px calc(8px + env(safe-area-inset-bottom));
+    background: linear-gradient(transparent, var(--bg) 45%);
+  }
+  .mobile-school .mobile-tabs {
+    border-radius: 26px;
+    padding: 8px 6px;
+    box-shadow: 0 8px 30px -12px rgb(61 53 140 / .25);
+  }
+  .mobile-school .mobile-tabs [aria-current="page"] {
+    background: var(--sky);
+    color: var(--brand);
+    border-radius: 18px;
+  }
+  .mobile-school input, .mobile-school select, .mobile-school textarea { min-width: 0; }
+  .mobile-school h1, .mobile-school h2 { overflow-wrap: anywhere; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }

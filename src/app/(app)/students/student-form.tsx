@@ -15,7 +15,7 @@ export type StudentInitial = Partial<Record<
 
 function Group({ icon, tint, title, children }: { icon: typeof UserRound; tint: Tint; title: string; children: React.ReactNode }) {
   return (
-    <Card className="p-5">
+    <Card className="p-4 sm:p-5">
       <div className="mb-4 flex items-center gap-3">
         <IconChip icon={icon} tint={tint} size={36} />
         <h2 className="text-[17px] font-bold">{title}</h2>
@@ -54,7 +54,7 @@ export function StudentForm({ action, sections, initial = {}, requestId, mode, t
         <Field label={s.nameEn} htmlFor="full_name_en">
           <Input id="full_name_en" name="full_name_en" defaultValue={v("full_name_en")} autoComplete="off" autoCapitalize="words" />
         </Field>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
           <Field label={s.dob} htmlFor="date_of_birth">
             <Input id="date_of_birth" name="date_of_birth" type="date" max={today} defaultValue={v("date_of_birth")} />
           </Field>
@@ -88,7 +88,7 @@ export function StudentForm({ action, sections, initial = {}, requestId, mode, t
             ))}
           </Select>
         </Field>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
           <Field label={s.roll} htmlFor="roll_no" error={err("roll_no")}>
             <Input id="roll_no" name="roll_no" inputMode="numeric" defaultValue={v("roll_no")} aria-invalid={!!err("roll_no")} />
           </Field>
@@ -105,7 +105,7 @@ export function StudentForm({ action, sections, initial = {}, requestId, mode, t
           <Field label={s.guardianName} htmlFor="guardian_name">
             <Input id="guardian_name" name="guardian_name" defaultValue={v("guardian_name")} autoComplete="off" />
           </Field>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
             <Field label={s.relationship} htmlFor="guardian_relationship">
               <Select id="guardian_relationship" name="guardian_relationship" defaultValue={v("guardian_relationship") || "father"}>
                 {(["father", "mother", "legal_guardian", "other"] as const).map((r) => <option key={r} value={r}>{s.relationships[r]}</option>)}
@@ -141,7 +141,7 @@ export function StudentForm({ action, sections, initial = {}, requestId, mode, t
         {state?.fieldErrors && <Notice tone="error">{t.common.invalidField}</Notice>}
       </div>
 
-      <div className="sticky bottom-[96px] z-20">
+      <div className="sticky bottom-[calc(96px+env(safe-area-inset-bottom))] z-20 rounded-2xl bg-bg/95 p-2 backdrop-blur-sm lg:bottom-4">
         <Button type="submit" size="lg" className="w-full" disabled={pending}>
           {pending ? s.saving : mode === "new" ? s.save : s.saveEdit}
         </Button>
