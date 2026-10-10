@@ -786,7 +786,7 @@ export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
             );
           })}
           <SectionTitle>{L("Invitations", "আমন্ত্রণ")}</SectionTitle>
-          {list(invitations, (r) => (
+          {list(invitations.filter((r) => !r.revoked_at), (r) => (
             <>
               <p className="break-all font-semibold">{str(r, "email")}</p>
               <p className="text-sm">
