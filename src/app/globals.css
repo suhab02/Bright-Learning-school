@@ -95,6 +95,7 @@ html[lang="bn"] body { font-family: var(--font-bn); line-height: 1.6; }
 
 .num { font-variant-numeric: tabular-nums; }
 .workspace-sidebar { background: var(--brand-deep); color: white; }
+.workspace-sidebar nav { scrollbar-width: thin; scrollbar-color: rgb(255 255 255 / 0.18) transparent; }
 .workspace-header { background: color-mix(in oklab, var(--surface) 94%, transparent); backdrop-filter: blur(16px); }
 .workspace-hero {
   background: var(--brand-deep);

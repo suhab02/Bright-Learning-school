@@ -120,13 +120,11 @@ async function Dashboard() {
 
       {setupOpen && (
         <Card className="rise p-5">
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="font-bold">{t.dashboard.setupTitle}</h2>
+          <details>
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
+            <span className="flex items-center gap-2 text-sm font-semibold"><CircleCheck className="size-4 text-brand" />{t.dashboard.setupTitle}<ChevronRight className="size-4 text-ink-2" /></span>
             <span className="num text-sm font-semibold text-ink-2">{n(done)}/{n(setup.length)}</span>
-          </div>
-          <div className="mt-3 h-2 overflow-hidden rounded-full bg-surface-2">
-            <div className="h-full rounded-full bg-gradient-to-r from-sun to-gold transition-all" style={{ width: `${(done / setup.length) * 100}%` }} />
-          </div>
+          </summary>
           <ol className="mt-4 space-y-2">
             {setup.map((x) => (
               <li key={x.href}>
@@ -138,6 +136,7 @@ async function Dashboard() {
               </li>
             ))}
           </ol>
+          </details>
         </Card>
       )}
 
