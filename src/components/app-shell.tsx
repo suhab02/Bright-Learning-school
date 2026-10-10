@@ -27,7 +27,7 @@ const NAV_TINT: Partial<Record<string, string>> = {
   reports: "blue", notices: "orange", staff: "slate", settings: "slate", help: "teal",
 };
 
-/** Compact modal and mobile navigation frame. Desktop content uses a full workspace. */
+/** One mobile app frame on every screen, including wide browser windows. */
 export const FRAME = "mx-auto w-full max-w-[480px]";
 
 function isActive(pathname: string, href: string) {
@@ -41,31 +41,15 @@ export function AppShell({ school, user, yearName, nav, bottom, unread, children
   const inBottom = new Set(bottom.map((b) => b.href));
   const more = nav.filter((n) => !inBottom.has(n.href));
   const moreActive = more.some((m) => isActive(pathname, m.href));
-  const current = nav.find((n) => isActive(pathname, n.href));
 
   return (
-    <div className="mobile-school min-h-dvh bg-bg">
+    <div className="mobile-school mx-auto min-h-dvh w-full max-w-[480px] bg-bg">
       <a href="#school-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-xl focus:bg-surface focus:p-3">{locale === "bn" ? "মূল অংশে যান" : "Skip to content"}</a>
-      <aside className="workspace-sidebar no-print fixed inset-y-0 left-0 z-40 hidden w-[252px] flex-col lg:flex">
-        <Link href="/" className="flex items-center gap-3 px-6 pb-7 pt-8" aria-label={school.name}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={school.logoUrl} alt="" className="size-11 shrink-0 rounded-xl bg-white object-contain p-1" />
-          <span className="min-w-0"><span className="block text-sm font-semibold leading-snug">{school.name}</span><span className="mt-1 block text-[11px] text-white/55">{yearName ? `${t.common.academicYear} ${yearName}` : school.place}</span></span>
-        </Link>
-        <p className="mb-3 px-7 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/40">{locale === "bn" ? "স্কুল পরিচালনা" : "School workspace"}</p>
-        <nav aria-label={t.nav.menu} className="flex-1 space-y-1 overflow-y-auto px-4 pb-5">
-          {nav.map((item) => {
-            const active = isActive(pathname, item.href);
-            return <Link key={item.href} href={item.href} aria-current={active ? "page" : undefined} className={cn("flex min-h-11 items-center gap-3 rounded-xl px-3 text-[13px] font-medium transition-colors", active ? "bg-white/12 text-white ring-1 ring-white/10" : "text-white/65 hover:bg-white/6 hover:text-white")}><NavIcon name={item.icon} className="size-[18px]" /><span>{t.nav[item.key]}</span>{active && <span className="ml-auto size-1.5 rounded-full bg-gold" />}</Link>;
-          })}
-        </nav>
-        <div className="mx-5 mb-6 border-t border-white/10 pt-5"><p className="text-sm font-medium">{user.name}</p><p className="mt-1 flex items-center gap-1.5 text-xs text-white/55"><ShieldCheck className="size-3.5" />{user.role}</p></div>
-      </aside>
-      <div className="relative flex min-h-dvh flex-col lg:ml-[252px]">
+      <div className="relative flex min-h-dvh flex-col">
         {/* Top app bar */}
         <header className="workspace-header no-print sticky top-0 z-30 border-b border-line pt-[env(safe-area-inset-top)]">
-          <div className="mobile-topbar mx-auto flex h-16 max-w-[1280px] items-center gap-2 px-4 sm:gap-3 lg:h-[76px] lg:px-10">
-            <Link href="/" className="flex min-w-0 flex-1 items-center gap-2.5 lg:hidden" aria-label={school.name}>
+          <div className="mobile-topbar mx-auto flex h-16 max-w-[480px] items-center gap-2 px-4">
+            <Link href="/" className="flex min-w-0 flex-1 items-center gap-2.5" aria-label={school.name}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={school.logoUrl} alt="" className="size-10 shrink-0 rounded-xl border border-line bg-white object-contain p-1" />
               <span className="min-w-0">
@@ -75,7 +59,6 @@ export function AppShell({ school, user, yearName, nav, bottom, unread, children
                 </span>
               </span>
             </Link>
-            <div className="hidden min-w-0 flex-1 items-center gap-2 text-xs text-ink-2 lg:flex"><span>{locale === "bn" ? "স্কুল" : "Workspace"}</span><ChevronRight className="size-3" /><span className="font-medium text-ink">{current ? t.nav[current.key] : school.name}</span></div>
             <Link href="/notifications" className="press relative grid size-10 place-items-center rounded-xl border border-line bg-surface hover:bg-surface-2" aria-label={t.common.notifications}>
               <Bell className="size-[19px]" />
               {unread > 0 && (
@@ -88,10 +71,10 @@ export function AppShell({ school, user, yearName, nav, bottom, unread, children
           </div>
         </header>
 
-        <main id="school-content" className="mx-auto w-full min-w-0 max-w-[1280px] flex-1 px-4 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-4 sm:px-7 lg:px-10 lg:pb-10 lg:pt-7"><div className="mb-4 flex flex-wrap items-center justify-between gap-2 text-xs lg:mb-6"><span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 font-medium text-ink-2"><ShieldCheck className="size-3.5 text-brand" />{user.role}</span><Link href="/help" className="inline-flex min-h-11 items-center gap-1.5 font-medium text-ink-2 hover:text-brand">{locale === "bn" ? "আপনার অনুমতি ও সহায়তা" : "Your access & help"}<ChevronRight className="size-3.5" /></Link></div>{children}</main>
+        <main id="school-content" className="mx-auto w-full min-w-0 max-w-[480px] flex-1 px-4 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-4"><div className="mb-4 flex flex-wrap items-center justify-between gap-2 text-xs"><span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1.5 font-medium text-ink-2"><ShieldCheck className="size-3.5 text-brand" />{user.role}</span><Link href="/help" className="inline-flex min-h-11 items-center gap-1.5 font-medium text-ink-2 hover:text-brand">{locale === "bn" ? "আপনার অনুমতি ও সহায়তা" : "Your access & help"}<ChevronRight className="size-3.5" /></Link></div>{children}</main>
 
         {/* Floating bottom tab bar */}
-        <div className="mobile-tabbar no-print fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[640px] px-3 pb-[calc(10px+env(safe-area-inset-bottom))] lg:hidden">
+        <div className="mobile-tabbar no-print fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[480px] px-3 pb-[calc(10px+env(safe-area-inset-bottom))]">
           <nav aria-label={t.nav.menu}
             className="mobile-tabs float-shadow grid rounded-[20px] bg-surface/95 p-1.5 backdrop-blur-xl ring-1 ring-line"
             style={{ gridTemplateColumns: `repeat(${bottom.length + (more.length ? 1 : 0)}, minmax(0,1fr))` }}>

@@ -15,7 +15,7 @@ export type StudentInitial = Partial<Record<
 
 function Group({ icon, tint, title, children }: { icon: typeof UserRound; tint: Tint; title: string; children: React.ReactNode }) {
   return (
-    <Card className="p-4 sm:p-5">
+    <Card className="p-4">
       <div className="mb-4 flex items-center gap-3">
         <IconChip icon={icon} tint={tint} size={36} />
         <h2 className="text-[17px] font-bold">{title}</h2>
@@ -141,7 +141,7 @@ export function StudentForm({ action, sections, initial = {}, requestId, mode, t
         {state?.fieldErrors && <Notice tone="error">{t.common.invalidField}</Notice>}
       </div>
 
-      <div className="sticky bottom-[calc(96px+env(safe-area-inset-bottom))] z-20 rounded-2xl bg-bg/95 p-2 backdrop-blur-sm lg:bottom-4">
+      <div className="sticky bottom-[calc(96px+env(safe-area-inset-bottom))] z-20 rounded-2xl bg-bg/95 p-2 backdrop-blur-sm">
         <Button type="submit" size="lg" className="w-full" disabled={pending}>
           {pending ? s.saving : mode === "new" ? s.save : s.saveEdit}
         </Button>
