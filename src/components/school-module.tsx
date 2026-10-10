@@ -1,5 +1,7 @@
 import { randomUUID } from "node:crypto";
 import Link from "next/link";
+import { notFound } from "next/navigation";
+import { TeacherDirectory } from "./teacher-directory";
 import { Megaphone, Users } from "lucide-react";
 import { can, requireContext } from "@/lib/auth";
 import { getT } from "@/lib/i18n/server";
@@ -33,7 +35,7 @@ export type SchoolModuleKind =
   | "notices"
   | "exams"
   | "expenses";
-export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
+export async function SchoolModule({ kind, teacherId }: { kind: SchoolModuleKind; teacherId?: string }) {
   const ctx = await requireContext();
   const [{ locale, t }, sections, today, db] = await Promise.all([
     getT(),
@@ -399,11 +401,23 @@ export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
         schoolRows("academic_years", ctx.schoolId),
       ]);
       const currentYear = years.find((y) => y.is_current);
+      if (teacherId && !staff.some((r) => str(r, "id") === teacherId)) notFound();
       const photos = await photoUrls(staff.map((r) => str(r, "photo_path")), "teacher-photos");
       content = (
         <>
-          <Card className="mb-4 p-4">
-            <p className="mb-3 text-sm text-ink-2">{L("Save the teacher's details first, then use Add photo on their card. JPG, PNG or WebP; photos are reduced for fast uploads.", "আগে শিক্ষকের তথ্য সংরক্ষণ করুন, তারপর তার কার্ডে ছবি যোগ করুন। JPG, PNG বা WebP; দ্রুত আপলোডের জন্য ছবি ছোট করা হয়।")}</p>
+          {!teacherId && <TeacherDirectory locale={locale} teachers={staff.map((r) => ({
+            id: str(r, "id"), name: named(r, locale), code: str(r, "staff_code"),
+            designation: str(r, "designation"), status: str(r, "status"),
+            photo: photos[str(r, "photo_path")] ?? null,
+            assignments: assignments.filter((a) => str(a, "staff_id") === str(r, "id") && str(a, "academic_year_id") === str(currentYear ?? {}, "id")).map((a) => {
+              const section = sections.find((s) => s.id === str(a, "section_id"));
+              const label = section ? `${locale === "bn" ? section.class_name_bn : section.class_name_en} · ${section.name}` : "";
+              const subject = named(subjects.find((s) => str(s, "id") === str(a, "subject_id")) ?? {}, locale);
+              return [label, subject].filter(Boolean).join(" / ");
+            }).filter(Boolean),
+          }))} />}
+          {!teacherId && <Card className="my-4 p-4">
+            <p className="mb-3 text-sm text-ink-2">{L("Save the teacher's details first, then open their profile to add a photo. JPG, PNG or WebP; photos are reduced for fast uploads.", "আগে শিক্ষকের তথ্য সংরক্ষণ করুন, তারপর তার প্রোফাইলে ছবি যোগ করুন। JPG, PNG বা WebP; দ্রুত আপলোডের জন্য ছবি ছোট করা হয়।")}</p>
             {details(
               L("Add staff / teacher", "কর্মী / শিক্ষক যোগ করুন"),
               form("staff", [
@@ -421,8 +435,8 @@ export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
                 ),
               ]),
             )}
-          </Card>
-          {list(staff, (r) => (
+          </Card>}
+          {teacherId && list(staff.filter((r) => str(r, "id") === teacherId), (r) => (
             <>
               <TeacherPhoto staffId={str(r, "id")} schoolId={ctx.schoolId} name={named(r, locale)} src={photos[str(r, "photo_path")] ?? null} />
               <h2 className="text-lg font-bold">{named(r, locale)}</h2>
@@ -1351,7 +1365,7 @@ export async function SchoolModule({ kind }: { kind: SchoolModuleKind }) {
   }
   return (
     <div>
-      <PageHeader title={title} />
+      <PageHeader title={teacherId ? L("Teacher profile", "শিক্ষকের প্রোফাইল") : title} back={teacherId ? "/teachers" : undefined} />
       {content}
     </div>
   );

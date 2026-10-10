@@ -1,13 +1,13 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { GraduationCap, Plus } from "lucide-react";
+import { GraduationCap, Plus, ChevronRight } from "lucide-react";
 import { can, requireContext } from "@/lib/auth";
 import { getT } from "@/lib/i18n/server";
 import { getSchool } from "@/lib/data/school";
-import { className, displayName, getSectionOptions, listStudents } from "@/lib/data/students";
+import { className, displayName, getSectionOptions, listStudents, type DirectoryRow } from "@/lib/data/students";
 import { formatNumber, toBnDigits } from "@/lib/format";
 import { Card, Skeleton } from "@/components/ui";
-import { Avatar, Chip, EmptyState, ListRow, PageHeader } from "@/components/page";
+import { Avatar, Chip, EmptyState, PageHeader } from "@/components/page";
 import { cn } from "@/lib/cn";
 import { SearchBox } from "./search-box";
 import { photoUrls } from "@/lib/data/photos";
@@ -29,6 +29,11 @@ async function StudentList({ searchParams }: { searchParams: Promise<SP> }) {
     getSectionOptions(ctx.schoolId),
     listStudents({ q, classId, includeLeft, page }),
   ]);
+  const groups = new Map<string, DirectoryRow[]>();
+  for (const row of list.rows) {
+    const key = row.class_id ?? "unassigned";
+    groups.set(key, [...(groups.get(key) ?? []), row]);
+  }
   const photos = await photoUrls(list.rows.map((r) => r.photo_path));
   const classes = [...new Map(sections.map((s) => [s.class_id, s])).values()];
   const href = (patch: Record<string, string | undefined>) => {
@@ -74,27 +79,32 @@ async function StudentList({ searchParams }: { searchParams: Promise<SP> }) {
         {s.showLeft}
       </Link>
 
-      <Card className="mt-4 overflow-hidden">
-        {list.rows.length === 0 ? (
-          <EmptyState icon={GraduationCap} title={q || classId ? s.noMatch : s.empty}
-            action={!q && !classId && canAdd ? <Link href="/students/new" className="press inline-flex h-12 items-center gap-2 rounded-2xl bg-brand px-5 font-semibold text-white"><Plus className="size-5" />{s.add}</Link> : undefined} />
-        ) : (
-          <ul className="divide-y divide-line/70">
-            {list.rows.map((r) => {
+      <div className="mt-5 space-y-6">
+        {list.rows.length === 0 ? <Card><EmptyState icon={GraduationCap} title={q || classId ? s.noMatch : s.empty}
+          body={locale === "bn" ? "শ্রেণি বেছে নিন, নাম দিয়ে খুঁজুন অথবা প্রাক্তন শিক্ষার্থী দেখুন।" : "Choose a class, search by name, or include former students."}
+          action={!q && !classId && canAdd ? <Link href="/students/new" className="press inline-flex h-12 items-center gap-2 rounded-2xl bg-brand px-5 font-semibold text-white"><Plus className="size-5" />{s.add}</Link> : undefined} /></Card>
+          : [...groups.entries()].map(([id, rows]) => <section key={id} aria-labelledby={`class-${id}`}>
+            <div className="mb-3 flex items-center gap-3 px-1">
+              <span className="grid size-10 place-items-center rounded-2xl bg-sky text-brand"><GraduationCap className="size-5" aria-hidden /></span>
+              <div className="min-w-0 flex-1"><h2 id={`class-${id}`} className="font-semibold">{(locale === "bn" ? rows[0].class_name_bn || rows[0].class_name_en : rows[0].class_name_en) || (locale === "bn" ? "শ্রেণি নির্ধারিত নয়" : "Unassigned class")}</h2>
+                <p className="text-xs text-ink-2">{formatNumber(rows.length, bn)} {s.count}{list.pages > 1 ? (locale === "bn" ? " · এই পাতায়" : " · on this page") : ""}</p>
+              </div>
+            </div>
+            <ul className="space-y-3">{rows.map((r) => {
               const name = displayName(r, locale);
-              const cls = className(r, locale);
-              const parts = [cls, r.roll_no ? `${s.roll} ${formatNumber(r.roll_no, bn)}` : null, bn.bnDigits ? toBnDigits(r.student_code) : r.student_code].filter(Boolean);
-              return (
-                <li key={r.id}>
-                  <ListRow href={`/students/${r.id}`} leading={<Avatar name={name} id={r.id} src={r.photo_path ? photos[r.photo_path] : null} />}
-                    title={name} subtitle={parts.join(" · ")}
-                    trailing={r.status !== "active" ? <Chip tint="rose">{s.status[r.status as keyof typeof s.status] ?? r.status}</Chip> : undefined} />
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </Card>
+              const code = bn.bnDigits ? toBnDigits(r.student_code) : r.student_code;
+              return <li key={r.id}><Link href={`/students/${r.id}`} className="press flex items-center gap-3 rounded-[24px] border border-line bg-surface p-4 card-shadow">
+                <Avatar name={name} id={r.id} size={56} src={r.photo_path ? photos[r.photo_path] : null} className="rounded-[18px]" />
+                <div className="min-w-0 flex-1"><h3 className="break-words font-semibold">{name}</h3>
+                  <p className="mt-1 text-xs text-ink-2">{className(r, locale)}{r.roll_no !== null ? ` · ${s.roll} ${formatNumber(r.roll_no, bn)}` : ""}</p>
+                  <div className="mt-2 flex flex-wrap items-center gap-2"><span className="num rounded-md bg-surface-2 px-2 py-0.5 text-[11px] text-ink-2">{code}</span>
+                    {r.status !== "active" && <Chip tint="rose">{s.status[r.status as keyof typeof s.status] ?? r.status}</Chip>}
+                  </div>
+                </div><ChevronRight className="size-5 shrink-0 text-brand" aria-hidden />
+              </Link></li>;
+            })}</ul>
+          </section>)}
+      </div>
 
       {list.pages > 1 && (
         <nav className="mt-4 flex items-center justify-between gap-3" aria-label="Pages">

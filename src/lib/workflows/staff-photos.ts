@@ -16,6 +16,7 @@ export async function setTeacherPhoto(staffId: string, path: string | null) {
     if (old && old !== path) await db.storage.from("teacher-photos").remove([String(old)]);
     const signed = path ? await db.storage.from("teacher-photos").createSignedUrl(path, 3600) : null;
     revalidatePath("/teachers");
+    revalidatePath(`/teachers/${staffId}`);
     return { ok: true as const, url: signed?.data?.signedUrl ?? null };
   } catch {
     return { ok: false as const };
