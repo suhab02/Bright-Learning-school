@@ -74,7 +74,7 @@ export function PageHeader({ title, subtitle, back, action }: {
 /** Brand gradient band that continues the top bar (place first on a page). */
 export function HeroBand({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <section className={cn("workspace-hero relative mb-7 overflow-hidden rounded-[24px] p-6 sm:p-8", className)}>
+    <section className={cn("workspace-hero relative mb-6 overflow-hidden rounded-[24px] p-5 sm:mb-7 sm:p-8", className)}>
       {children}
     </section>
   );

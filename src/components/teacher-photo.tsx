@@ -48,13 +48,13 @@ export function TeacherPhoto({ staffId, schoolId, name, src }: {
   };
   return (
     <div className="mb-3 space-y-2">
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3 rounded-2xl bg-surface-2 p-3">
         <Avatar name={name} id={staffId} size={72} src={photo} />
         <input ref={input} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" disabled={busy}
           aria-label={`${t.students.addPhoto}: ${name}`}
           onChange={(event) => { const file = event.target.files?.[0]; event.target.value = ""; if (file) void pick(file); }} />
         <button type="button" disabled={busy} onClick={() => input.current?.click()}
-          className="press inline-flex min-h-11 items-center gap-2 rounded-xl bg-surface-2 px-3 text-sm font-semibold disabled:opacity-50">
+          className="press inline-flex min-h-12 items-center gap-2 rounded-xl border border-line bg-surface px-3 text-sm font-semibold disabled:opacity-50">
           {busy ? <Loader2 aria-hidden className="size-4 animate-spin" /> : <Camera aria-hidden className="size-4" />}
           {photo ? t.students.changePhoto : t.students.addPhoto}
         </button>
