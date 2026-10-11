@@ -4,7 +4,7 @@ import { useState } from "react";
 import { CheckCircle2, ImageOff, Printer, ShieldCheck } from "lucide-react";
 import { Button, Notice } from "@/components/ui";
 import { initials } from "@/components/page";
-import styles from "./student-id-card.module.css";
+import "./student-id-card.css";
 
 type CardData = {
   name: string; school: string; logo: string; code: string; classLabel: string;
@@ -22,40 +22,40 @@ export function StudentIdCard({ data, locale }: { data: CardData; locale: "bn" |
     </div>
     {!data.active && <div className="no-print mb-4"><Notice tone="warn">{L("This student is not active. Their current status is shown on the card.", "এই শিক্ষার্থী সক্রিয় নয়। কার্ডে বর্তমান অবস্থা দেখানো হয়েছে।")} {data.status}</Notice></div>}
     {(!data.photo || photoFailed) && <div className="no-print mb-4"><Notice tone="warn"><span className="flex items-center gap-2"><ImageOff className="size-4" />{L("Add a student photo before printing the final card.", "চূড়ান্ত কার্ড প্রিন্ট করার আগে শিক্ষার্থীর ছবি যোগ করুন।")}</span></Notice></div>}
-    <div className={styles.sheet}>
-      <section aria-label={L("ID card front", "আইডি কার্ডের সামনের অংশ")} className={styles.card}>
-        <div className={styles.front}>
-          <header className={styles.header}>
+    <div className="student-card-sheet">
+      <section aria-label={L("ID card front", "আইডি কার্ডের সামনের অংশ")} className="student-card-card">
+        <div className="student-card-front">
+          <header className="student-card-header">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={data.logo} alt="" className={styles.logo} />
-            <div><p className={styles.school}>{data.school}</p><p className={styles.caption}>{L("STUDENT IDENTITY CARD", "শিক্ষার্থী পরিচয়পত্র")}</p></div>
+            <img src={data.logo} alt="" className="student-card-logo" />
+            <div><p className="student-card-school">{data.school}</p><p className="student-card-caption">{L("STUDENT IDENTITY CARD", "শিক্ষার্থী পরিচয়পত্র")}</p></div>
           </header>
-          <div className={styles.details}>
-            <div className={styles.portrait}>
+          <div className="student-card-details">
+            <div className="student-card-portrait">
               {data.photo && !photoFailed ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={data.photo} alt={data.name} onError={() => setPhotoFailed(true)} />
               ) : <span>{initials(data.name)}</span>}
             </div>
-            <div className={styles.identity}>
-              <h2 className={styles.name}>{data.name}</h2>
-              <dl className={styles.fields}>
+            <div className="student-card-identity">
+              <h2 className="student-card-name">{data.name}</h2>
+              <dl className="student-card-fields">
                 <div><dt>{L("Student ID", "আইডি")}</dt><dd>{data.code}</dd></div>
                 <div><dt>{L("Class", "শ্রেণি")}</dt><dd>{data.classLabel}</dd></div>
                 <div><dt>{L("Roll", "রোল")}</dt><dd>{data.roll}</dd></div>
               </dl>
             </div>
           </div>
-          <footer className={styles.footer}><span>{data.year ? `${L("Academic year", "শিক্ষাবর্ষ")} ${data.year}` : data.school}</span><span className={styles.status}>{data.status}</span></footer>
+          <footer className="student-card-footer"><span>{data.year ? `${L("Academic year", "শিক্ষাবর্ষ")} ${data.year}` : data.school}</span><span className="student-card-status">{data.status}</span></footer>
         </div>
       </section>
-      <section aria-label={L("ID card back", "আইডি কার্ডের পেছনের অংশ")} className={styles.card}>
-        <div className={styles.back}>
-          <div className={styles.backBrand}><ShieldCheck aria-hidden /><span>{L("A proud member of our school", "আমাদের স্কুলের গর্বিত সদস্য")}</span></div>
-          <p className={styles.backSchool}>{data.school}</p>
-          <p className={styles.returnText}>{L("If found, please return this card to the school office.", "কার্ডটি পাওয়া গেলে অনুগ্রহ করে স্কুলের অফিসে ফেরত দিন।")}</p>
-          <div className={styles.schoolContact}>{data.address && <p>{data.address}</p>}{data.phone && <p>{L("School contact", "স্কুলের যোগাযোগ")}: {data.phone}</p>}</div>
-          <div className={styles.backFooter}><span>{data.code}</span><span>{L("School use only", "শুধু স্কুলে ব্যবহারের জন্য")}</span></div>
+      <section aria-label={L("ID card back", "আইডি কার্ডের পেছনের অংশ")} className="student-card-card">
+        <div className="student-card-back">
+          <div className="student-card-backBrand"><ShieldCheck aria-hidden /><span>{L("A proud member of our school", "আমাদের স্কুলের গর্বিত সদস্য")}</span></div>
+          <p className="student-card-backSchool">{data.school}</p>
+          <p className="student-card-returnText">{L("If found, please return this card to the school office.", "কার্ডটি পাওয়া গেলে অনুগ্রহ করে স্কুলের অফিসে ফেরত দিন।")}</p>
+          <div className="student-card-schoolContact">{data.address && <p>{data.address}</p>}{data.phone && <p>{L("School contact", "স্কুলের যোগাযোগ")}: {data.phone}</p>}</div>
+          <div className="student-card-backFooter"><span>{data.code}</span><span>{L("School use only", "শুধু স্কুলে ব্যবহারের জন্য")}</span></div>
         </div>
       </section>
     </div>
