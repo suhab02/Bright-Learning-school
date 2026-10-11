@@ -13,8 +13,9 @@ export const noticeDetailsSchema = z.object({
 export type NoticeDetails = z.infer<typeof noticeDetailsSchema>;
 export type NoticeSchool = { nameEn: string; nameBn: string; logo: string; address: string; phone: string; code: string; established: string; signer: string };
 export function readNoticeDetails(value: unknown): Partial<NoticeDetails> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
   const parsed = noticeDetailsSchema.partial().safeParse(value);
-  return parsed.success ? parsed.data : {};
+  return parsed.success ? Object.fromEntries(Object.entries(parsed.data).filter(([key]) => Object.hasOwn(value, key))) : {};
 }
 export function noticeDate(date: string, locale: "bn" | "en") {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return "—";
