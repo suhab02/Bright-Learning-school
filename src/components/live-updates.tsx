@@ -17,7 +17,7 @@ const TABLES = [
   "marks",
 ];
 /** Receive authorized change signals, then reload through the authenticated server. */
-export function LiveUpdates({ schoolId }: { schoolId: string }) {
+export function LiveUpdates({ schoolId, userId }: { schoolId: string; userId: string }) {
   const router = useRouter();
   useEffect(() => {
     const db = supabaseBrowser();
@@ -71,7 +71,7 @@ export function LiveUpdates({ schoolId }: { schoolId: string }) {
             event,
             schema: "public",
             table,
-            filter: `school_id=eq.${schoolId}`,
+            filter: table === "notifications" ? `user_id=eq.${userId}` : `school_id=eq.${schoolId}`,
           },
           changed,
         );
@@ -96,6 +96,6 @@ export function LiveUpdates({ schoolId }: { schoolId: string }) {
       window.removeEventListener("focus", returned);
       window.removeEventListener("school:saved", saved);
     };
-  }, [router, schoolId]);
+  }, [router, schoolId, userId]);
   return null;
 }

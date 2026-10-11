@@ -31,7 +31,7 @@ async function Fees({ searchParams }: { searchParams: Promise<Record<string, str
       ? supabase.rpc("finance_summary", { p_school: ctx.schoolId, p_from: today.slice(0, 8) + "01", p_to: today }).then((r) => r.data as Record<string, number> | null)
       : null,
     q ? null : getDueStudents(),
-    q ? listStudents({ q }) : null,
+    q ? listStudents({ schoolId: ctx.schoolId, q }) : null,
   ]);
 
   const photos = await photoUrls([...(dues ?? []).map((d) => d.student.photo_path), ...(found?.rows ?? []).map((r) => r.photo_path)]);
