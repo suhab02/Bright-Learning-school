@@ -20,9 +20,10 @@ export function NoticeLetter({ school, title, body, date, details = {}, locale }
         <div className="notice-letter-contact">{code && <span>{L("School code", "স্কুল কোড")}: {code}</span>}{phone && <span>{L("Phone", "মোবাইল")}: {phone}</span>}{established && <span>{L("Established", "স্থাপিত")}: {established}</span>}</div>
       </div>
     </header>
-    <div className="notice-letter-meta"><span>{L("Ref", "সূত্র")}: {details.reference || "—"}</span><span>{L("Date", "তারিখ")}: {noticeDate(details.date || date, locale)}</span></div>
-    <div className="notice-letter-heading"><span>{L("Notice", "নোটিশ")}</span><h2>{title || L("Notice title", "নোটিশের শিরোনাম")}</h2></div>
+    <div className="notice-letter-meta"><span>{L("Reference", "স্মারক নং")}: {details.reference || "—"}</span><span>{L("Date", "তারিখ")}: {noticeDate(details.date || date, locale)}</span></div>
+    <div className="notice-letter-heading"><span>{L("School notice", "স্কুলের বিজ্ঞপ্তি")}</span><h2>{title || L("Notice title", "নোটিশের শিরোনাম")}</h2></div>
     <div className="notice-letter-body">{body || L("Your notice text will appear here.", "আপনার নোটিশের লেখা এখানে দেখা যাবে।")}</div>
-    <footer className="notice-letter-signoff"><div className="notice-letter-signature-line" /><p className="notice-letter-signer">{details.signer || ""}</p><p>{details.designation || ""}</p><p>{locale === "bn" ? school.nameBn : school.nameEn}</p></footer>
+    {/* eslint-disable-next-line @next/next/no-img-element */}
+    <footer className="notice-letter-signoff">{details.signature && <img className="notice-letter-signature" src={details.signature} alt={L("Teacher signature", "শিক্ষকের স্বাক্ষর")} />}<div className="notice-letter-signature-line" /><p className="notice-letter-signer">{details.signer || ""}</p><p>{details.designation || ""}</p><p>{locale === "bn" ? school.nameBn : school.nameEn}</p></footer>
   </article>;
 }

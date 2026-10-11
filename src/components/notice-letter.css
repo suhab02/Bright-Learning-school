@@ -34,3 +34,48 @@
   .notice-print-view .notice-letter-signoff { margin-top:18mm; font-size:12pt; }
   .notice-print-view .notice-letter-signer { font-size:14pt; }
 }
+/* Modern school notice: the app's purple palette, generous spacing and clear hierarchy. */
+.notice-letter { border:1px solid #e5e1f4; border-top:0; border-radius:24px; padding:0 20px 24px; overflow:hidden; color:#25243b; box-shadow:0 8px 28px #5742a00b; }
+.notice-letter-header { margin:0 -20px; padding:24px 20px; border:0; background:linear-gradient(135deg,#f0edff,#f8f6ff); align-items:center; gap:14px; }
+.notice-letter-logo { width:60px; height:70px; background:white; border:1px solid #e6e0f4; border-radius:18px; padding:6px; }
+.notice-letter-brand { text-align:left; }
+.notice-letter-en { font-family:inherit; font-size:21px; line-height:1.25; color:#3e3394; }
+.notice-letter-bn { font-size:19px; color:#393352; }
+.notice-letter-address { font-size:11px; color:#68617c; }
+.notice-letter-contact { justify-content:flex-start; color:#68617c; }
+.notice-letter-meta { margin-top:20px; padding:12px; border:1px solid #ece7f9; background:#faf9ff; border-radius:12px; color:#675b89; }
+.notice-letter-heading { margin:26px 0 20px; text-align:left; }
+.notice-letter-heading > span { display:inline-block; padding:5px 10px; border-radius:8px; background:#eee9ff; color:#6652c2; letter-spacing:0; font-size:11px; font-weight:600; }
+.notice-letter-heading h2 { margin-top:12px; font-size:22px; color:#302851; }
+.notice-letter-body { font-size:15px; line-height:1.95; }
+.notice-letter-watermark { top:250px; opacity:.035; }
+.notice-letter-signoff { border-top:1px solid #ebe5f6; padding-top:18px; margin-top:28px; }
+.notice-letter-signer { color:#6652bc; }
+.notice-letter-signature-line { border-color:#b7a9d5; }
+.notice-export-letter { width:794px; padding:0 40px 40px; border-radius:24px; }
+.notice-export-letter .notice-letter-header { margin:0 -40px; padding:36px 40px; gap:24px; }
+.notice-export-letter .notice-letter-logo { width:88px; height:100px; }
+.notice-export-letter .notice-letter-en { font-size:30px; }
+.notice-export-letter .notice-letter-bn { font-size:26px; }
+.notice-export-letter .notice-letter-address,.notice-export-letter .notice-letter-contact,.notice-export-letter .notice-letter-meta { font-size:15px; }
+.notice-export-letter .notice-letter-heading { margin:34px 0; }
+.notice-export-letter .notice-letter-heading h2 { font-size:28px; }
+.notice-export-letter .notice-letter-body { font-size:20px; min-height:260px; }
+.notice-export-letter .notice-letter-signoff { font-size:16px; }
+.notice-export-letter .notice-letter-signer { font-size:20px; }
+@media print {
+  body:has(.notice-print-target) *:not(:has(.notice-print-target)):not(.notice-print-target):not(.notice-print-target *) { display:none !important; }
+  body:has(.notice-print-target) *:has(.notice-print-target) { padding:0 !important; margin:0 !important; border:0 !important; max-width:none !important; min-height:0 !important; height:auto !important; overflow:visible !important; }
+  body:has(.notice-print-target) .notice-print-target { position:static; width:100%; page:school-notice; border:0; padding:0; }
+  body:has(.notice-print-target) .notice-print-target .notice-letter { border:0; border-radius:0; box-shadow:none; width:100%; padding:0; overflow:visible; }
+  body:has(.notice-print-target) .notice-print-target .notice-letter-header { margin:0; padding:8mm; border-radius:5mm; }
+  body:has(.notice-print-target) .notice-print-target .notice-letter-en { font-size:24pt; }
+  body:has(.notice-print-target) .notice-print-target .notice-letter-bn { font-size:20pt; }
+  body:has(.notice-print-target) .notice-print-target .notice-letter-body { font-size:13pt; }
+  body:has(.notice-print-target) .notice-print-target .notice-letter-meta { margin-top:6mm; font-size:10pt; }
+  body:has(.notice-print-target) .notice-print-target .notice-letter-signoff { font-size:11pt; }
+  body:has(.notice-print-target) .notice-print-target .notice-letter-heading h2 { font-size:18pt; }
+}
+
+.notice-letter-signature { display:block; width:140px; height:48px; object-fit:contain; margin:0 0 8px auto; background:white; }
+.notice-export-letter .notice-letter-signature { width:180px; height:60px; }
