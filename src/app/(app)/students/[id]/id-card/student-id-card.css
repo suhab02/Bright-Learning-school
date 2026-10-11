@@ -1,0 +1,36 @@
+.student-card-sheet { display: flex; flex-direction: column; align-items: center; gap: 24px; }
+.student-card-card { width: 100%; max-width: 324px; aspect-ratio: 85.6 / 54; container-type: inline-size; border-radius: 16px; overflow: hidden; background: white; color: #242543; box-shadow: 0 16px 40px -18px #45419b66; }
+.student-card-front, .student-card-back { height: 100%; position: relative; display: flex; flex-direction: column; }
+.student-card-header { display: flex; align-items: center; gap: 3cqw; padding: 3.8cqw 4.6cqw; color: white; background: radial-gradient(circle at 90% 0%, #a69afe99, transparent 60%), linear-gradient(115deg, #4933c7, #6677ee); }
+.student-card-logo { width: 11cqw; height: 11cqw; flex-shrink: 0; border-radius: 3cqw; background: white; padding: 1cqw; object-fit: contain; }
+.student-card-school { font-size: 4cqw; font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; }
+.student-card-caption { font-size: 2.5cqw; letter-spacing: .12em; margin-top: 1.3cqw; opacity: .85; }
+.student-card-details { display: flex; flex: 1; align-items: center; gap: 4cqw; padding: 4cqw 4.6cqw; min-height: 0; background: radial-gradient(circle at 100% 100%, #eeebff, transparent 55%); }
+.student-card-portrait { flex-shrink: 0; width: 23cqw; height: 28cqw; border-radius: 3cqw; border: 1cqw solid white; background: #e6e3fc; display: grid; place-items: center; overflow: hidden; box-shadow: 0 0 0 1px #e0dbef; }
+.student-card-portrait img { width: 100%; height: 100%; object-fit: cover; }
+.student-card-portrait span { font-size: 9cqw; color: #6150c9; font-weight: 700; }
+.student-card-identity { flex: 1; min-width: 0; }
+.student-card-name { font-size: 4.5cqw; line-height: 1.25; font-weight: 700; overflow-wrap: anywhere; margin-bottom: 2.5cqw; }
+.student-card-fields { display: grid; gap: 1.4cqw; font-size: 3.1cqw; line-height: 1.25; }
+.student-card-fields > div { display: flex; gap: 2cqw; }
+.student-card-fields dt { color: #73718b; width: 17cqw; flex-shrink: 0; }
+.student-card-fields dd { font-weight: 600; overflow-wrap: anywhere; }
+.student-card-footer { display: flex; justify-content: space-between; align-items: center; gap: 2cqw; padding: 2.5cqw 4.6cqw; background: #eeecff; font-size: 2.8cqw; color: #52459a; }
+.student-card-status { font-weight: 700; }
+.student-card-back { padding: 5cqw; background: radial-gradient(circle at 100% 0%, #ddd8ff, transparent 55%), #faf9ff; }
+.student-card-backBrand { display: flex; align-items: center; gap: 2cqw; color: #6150c9; font-size: 2.7cqw; font-weight: 600; }
+.student-card-backBrand svg { width: 5cqw; height: 5cqw; flex-shrink: 0; }
+.student-card-backSchool { font-size: 4.5cqw; line-height: 1.3; font-weight: 700; margin-top: 3.5cqw; }
+.student-card-returnText { font-size: 3.5cqw; line-height: 1.5; margin-top: 3cqw; }
+.student-card-schoolContact { font-size: 3cqw; line-height: 1.5; color: #73718b; margin-top: 2.5cqw; }
+.student-card-backFooter { display: flex; justify-content: space-between; gap: 2cqw; margin-top: auto; padding-top: 2cqw; border-top: 1px solid #dedaf3; font-size: 2.8cqw; font-weight: 600; color: #6150c9; }
+@media print {
+  @page studentCards { size: A4; margin: 15mm; }
+  body:has(.student-id-page) { page: studentCards; background: white; }
+  body:has(.student-id-page) .mobile-school { max-width: none; box-shadow: none; background: white; }
+  body:has(.student-id-page) #school-content { max-width: none; padding: 0; }
+  body:has(.student-id-page) #school-content > :not(.student-id-page) { display: none; }
+  .student-card-sheet { align-items: flex-start; gap: 8mm; }
+  .student-card-card { width: 85.6mm; max-width: none; height: 54mm; border-radius: 3mm; box-shadow: none; outline: .2mm solid #ddd; break-inside: avoid; }
+  .student-card-card, .student-card-card * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
