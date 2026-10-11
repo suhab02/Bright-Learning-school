@@ -1,81 +1,51 @@
-.notice-letter { position:relative; isolation:isolate; width:100%; background:#fff; color:#17243b; border:1px solid #dce3ed; border-top:5px solid #243e67; border-radius:14px; padding:22px 18px; box-shadow:0 8px 28px #18243b0a; overflow-wrap:anywhere; }
-.notice-letter-watermark { position:absolute; top:210px; left:15%; width:70%; max-height:480px; object-fit:contain; opacity:.06; pointer-events:none; z-index:-1; }
-.notice-letter-header { display:flex; align-items:flex-start; gap:12px; border-bottom:3px double #243e67; padding-bottom:16px; }
-.notice-letter-logo { width:54px; height:66px; object-fit:contain; flex-shrink:0; }
-.notice-letter-brand { flex:1; min-width:0; text-align:center; }
-.notice-letter-en { font-family:Georgia,serif; font-size:20px; font-weight:700; line-height:1.15; }
-.notice-letter-bn { margin-top:6px; font-size:20px; font-weight:700; line-height:1.3; }
-.notice-letter-address { margin-top:8px; font-size:11px; line-height:1.7; }
-.notice-letter-contact { display:flex; justify-content:center; flex-wrap:wrap; gap:2px 12px; margin-top:4px; font-size:10px; line-height:1.6; }
-.notice-letter-meta { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; margin-top:16px; font-size:11px; }
-.notice-letter-heading { text-align:center; margin:24px 0; }
-.notice-letter-heading > span { font-size:10px; color:#537094; letter-spacing:.14em; }
-.notice-letter-heading h2 { margin-top:6px; font-size:19px; font-weight:700; line-height:1.5; }
-.notice-letter-body { white-space:pre-wrap; font-size:15px; line-height:1.95; min-height:140px; }
-.notice-letter-signoff { margin:40px 0 4px auto; width:65%; text-align:right; font-size:12px; line-height:1.8; break-inside:avoid; }
-.notice-letter-signature-line { width:90px; border-top:1px solid #7d8ea5; margin:0 0 8px auto; }
-.notice-letter-signer { font-weight:700; color:#243e67; font-size:15px; }
-@media screen and (max-width:360px) { .notice-letter { padding:18px 12px; } .notice-letter-logo { width:40px; height:54px; } .notice-letter-en { font-size:17px; } .notice-letter-bn { font-size:17px; } }
+/* A4 proportions on screen, with natural growth for longer notices. */
+.notice-letter { position:relative; isolation:isolate; display:flex; flex-direction:column; width:100%; aspect-ratio:210 / 297; min-height:min-content; background:#fff; color:#25243b; border:1px solid #e5e1f4; border-radius:20px; padding:0 18px 20px; box-shadow:0 8px 28px #5742a00b; overflow:hidden; overflow-wrap:anywhere; }
+.notice-letter-watermark { position:absolute; top:32%; left:15%; width:70%; max-height:55%; object-fit:contain; opacity:.035; pointer-events:none; z-index:-1; }
+.notice-letter-header { flex-shrink:0; display:flex; align-items:center; gap:12px; margin:0 -18px; padding:18px; background:linear-gradient(135deg,#f0edff,#f8f6ff); }
+.notice-letter-logo { width:52px; height:62px; object-fit:contain; flex-shrink:0; background:white; border:1px solid #e6e0f4; border-radius:14px; padding:5px; }
+.notice-letter-brand { flex:1; min-width:0; text-align:left; }
+.notice-letter-en { font-size:18px; font-weight:700; line-height:1.25; color:#3e3394; }
+.notice-letter-bn { margin-top:4px; font-size:17px; font-weight:700; line-height:1.3; color:#393352; }
+.notice-letter-address { margin-top:6px; font-size:10px; line-height:1.6; color:#68617c; }
+.notice-letter-contact { display:flex; flex-wrap:wrap; gap:2px 10px; margin-top:3px; font-size:9px; line-height:1.5; color:#68617c; }
+.notice-letter-meta { flex-shrink:0; display:flex; flex-wrap:wrap; justify-content:space-between; gap:6px; margin-top:14px; padding:9px 10px; border:1px solid #ece7f9; background:#faf9ff; border-radius:10px; color:#675b89; font-size:10px; }
+.notice-letter-heading { flex-shrink:0; margin:18px 0 14px; text-align:left; }
+.notice-letter-heading > span { display:inline-block; padding:4px 8px; border-radius:7px; background:#eee9ff; color:#6652c2; font-size:10px; font-weight:600; }
+.notice-letter-heading h2 { margin-top:8px; font-size:19px; font-weight:700; line-height:1.45; color:#302851; }
+.notice-letter-body { flex:1 0 auto; white-space:pre-wrap; font-size:14px; line-height:1.75; }
+.notice-letter-signoff { flex-shrink:0; margin:20px 0 0 auto; padding-top:12px; width:65%; border-top:1px solid #ebe5f6; text-align:right; font-size:11px; line-height:1.6; break-inside:avoid; }
+.notice-letter-signature-line { width:90px; border-top:1px solid #b7a9d5; margin:0 0 6px auto; }
+.notice-letter-signer { font-weight:700; color:#6652bc; font-size:14px; }
+.notice-letter-signature { display:block; width:130px; height:42px; object-fit:contain; margin:0 0 6px auto; background:white; }
+/* 794 px at 182 mm PDF content width; comfortably inside one A4 page. */
+.notice-export-letter { width:794px; padding:0 32px 32px; }
+.notice-export-letter .notice-letter-header { margin:0 -32px; padding:28px 32px; gap:20px; }
+.notice-export-letter .notice-letter-logo { width:76px; height:88px; }
+.notice-export-letter .notice-letter-en { font-size:28px; }
+.notice-export-letter .notice-letter-bn { font-size:24px; }
+.notice-export-letter .notice-letter-address,.notice-export-letter .notice-letter-contact,.notice-export-letter .notice-letter-meta { font-size:14px; }
+.notice-export-letter .notice-letter-heading { margin:26px 0 20px; }
+.notice-export-letter .notice-letter-heading h2 { font-size:26px; }
+.notice-export-letter .notice-letter-body { font-size:20px; line-height:1.75; }
+.notice-export-letter .notice-letter-signoff { font-size:16px; margin-top:28px; }
+.notice-export-letter .notice-letter-signer { font-size:20px; }
+.notice-export-letter .notice-letter-signature { width:170px; height:56px; }
+@media screen and (max-width:360px) { .notice-letter { padding:0 12px 16px; } .notice-letter-header { margin:0 -12px; padding:14px 12px; gap:9px; } .notice-letter-en { font-size:16px; } .notice-letter-bn { font-size:15px; } .notice-letter-logo { width:42px; height:52px; } }
 @media print {
   @page school-notice { size:A4; margin:16mm; }
-  body:has(.notice-print-view) .mobile-school, body:has(.notice-print-view) #school-content { max-width:none !important; width:100% !important; padding:0 !important; margin:0 !important; box-shadow:none !important; }
-  body:has(.notice-print-view) #school-content > div:first-child { display:none !important; }
-  .notice-print-view { page:school-notice; }
-  .notice-print-view .notice-letter { min-height:250mm; border:0; border-radius:0; padding:0; box-shadow:none; font-size:12pt; }
-  .notice-print-view .notice-letter-logo { width:24mm; height:28mm; }
-  .notice-print-view .notice-letter-header { gap:6mm; padding-bottom:5mm; }
-  .notice-print-view .notice-letter-en { font-size:28pt; }
-  .notice-print-view .notice-letter-bn { font-size:24pt; }
-  .notice-print-view .notice-letter-address, .notice-print-view .notice-letter-contact, .notice-print-view .notice-letter-meta { font-size:11pt; }
-  .notice-print-view .notice-letter-heading { margin:10mm 0; }
-  .notice-print-view .notice-letter-heading h2 { font-size:18pt; }
-  .notice-print-view .notice-letter-body { font-size:13pt; line-height:1.9; min-height:70mm; }
-  .notice-print-view .notice-letter-watermark { top:65mm; left:15%; width:70%; max-height:150mm; }
-  .notice-print-view .notice-letter-signoff { margin-top:18mm; font-size:12pt; }
-  .notice-print-view .notice-letter-signer { font-size:14pt; }
-}
-/* Modern school notice: the app's purple palette, generous spacing and clear hierarchy. */
-.notice-letter { border:1px solid #e5e1f4; border-top:0; border-radius:24px; padding:0 20px 24px; overflow:hidden; color:#25243b; box-shadow:0 8px 28px #5742a00b; }
-.notice-letter-header { margin:0 -20px; padding:24px 20px; border:0; background:linear-gradient(135deg,#f0edff,#f8f6ff); align-items:center; gap:14px; }
-.notice-letter-logo { width:60px; height:70px; background:white; border:1px solid #e6e0f4; border-radius:18px; padding:6px; }
-.notice-letter-brand { text-align:left; }
-.notice-letter-en { font-family:inherit; font-size:21px; line-height:1.25; color:#3e3394; }
-.notice-letter-bn { font-size:19px; color:#393352; }
-.notice-letter-address { font-size:11px; color:#68617c; }
-.notice-letter-contact { justify-content:flex-start; color:#68617c; }
-.notice-letter-meta { margin-top:20px; padding:12px; border:1px solid #ece7f9; background:#faf9ff; border-radius:12px; color:#675b89; }
-.notice-letter-heading { margin:26px 0 20px; text-align:left; }
-.notice-letter-heading > span { display:inline-block; padding:5px 10px; border-radius:8px; background:#eee9ff; color:#6652c2; letter-spacing:0; font-size:11px; font-weight:600; }
-.notice-letter-heading h2 { margin-top:12px; font-size:22px; color:#302851; }
-.notice-letter-body { font-size:15px; line-height:1.95; }
-.notice-letter-watermark { top:250px; opacity:.035; }
-.notice-letter-signoff { border-top:1px solid #ebe5f6; padding-top:18px; margin-top:28px; }
-.notice-letter-signer { color:#6652bc; }
-.notice-letter-signature-line { border-color:#b7a9d5; }
-.notice-export-letter { width:794px; padding:0 40px 40px; border-radius:24px; }
-.notice-export-letter .notice-letter-header { margin:0 -40px; padding:36px 40px; gap:24px; }
-.notice-export-letter .notice-letter-logo { width:88px; height:100px; }
-.notice-export-letter .notice-letter-en { font-size:30px; }
-.notice-export-letter .notice-letter-bn { font-size:26px; }
-.notice-export-letter .notice-letter-address,.notice-export-letter .notice-letter-contact,.notice-export-letter .notice-letter-meta { font-size:15px; }
-.notice-export-letter .notice-letter-heading { margin:34px 0; }
-.notice-export-letter .notice-letter-heading h2 { font-size:28px; }
-.notice-export-letter .notice-letter-body { font-size:20px; min-height:260px; }
-.notice-export-letter .notice-letter-signoff { font-size:16px; }
-.notice-export-letter .notice-letter-signer { font-size:20px; }
-@media print {
   body:has(.notice-print-target) *:not(:has(.notice-print-target)):not(.notice-print-target):not(.notice-print-target *) { display:none !important; }
   body:has(.notice-print-target) *:has(.notice-print-target) { padding:0 !important; margin:0 !important; border:0 !important; max-width:none !important; min-height:0 !important; height:auto !important; overflow:visible !important; }
   body:has(.notice-print-target) .notice-print-target { position:static; width:100%; page:school-notice; border:0; padding:0; }
-  body:has(.notice-print-target) .notice-print-target .notice-letter { border:0; border-radius:0; box-shadow:none; width:100%; padding:0; overflow:visible; }
-  body:has(.notice-print-target) .notice-print-target .notice-letter-header { margin:0; padding:8mm; border-radius:5mm; }
-  body:has(.notice-print-target) .notice-print-target .notice-letter-en { font-size:24pt; }
-  body:has(.notice-print-target) .notice-print-target .notice-letter-bn { font-size:20pt; }
-  body:has(.notice-print-target) .notice-print-target .notice-letter-body { font-size:13pt; }
-  body:has(.notice-print-target) .notice-print-target .notice-letter-meta { margin-top:6mm; font-size:10pt; }
-  body:has(.notice-print-target) .notice-print-target .notice-letter-signoff { font-size:11pt; }
-  body:has(.notice-print-target) .notice-print-target .notice-letter-heading h2 { font-size:18pt; }
+  body:has(.notice-print-target) .notice-letter { display:block; aspect-ratio:auto; min-height:0; border:0; border-radius:0; box-shadow:none; width:100%; padding:0; overflow:visible; }
+  body:has(.notice-print-target) .notice-letter-header { margin:0; padding:6mm; border-radius:4mm; gap:5mm; }
+  body:has(.notice-print-target) .notice-letter-logo { width:20mm; height:23mm; }
+  body:has(.notice-print-target) .notice-letter-en { font-size:22pt; }
+  body:has(.notice-print-target) .notice-letter-bn { font-size:18pt; }
+  body:has(.notice-print-target) .notice-letter-address,body:has(.notice-print-target) .notice-letter-contact { font-size:9pt; }
+  body:has(.notice-print-target) .notice-letter-meta { margin-top:5mm; font-size:10pt; }
+  body:has(.notice-print-target) .notice-letter-heading { margin:6mm 0 5mm; }
+  body:has(.notice-print-target) .notice-letter-heading h2 { font-size:17pt; }
+  body:has(.notice-print-target) .notice-letter-body { font-size:12pt; line-height:1.75; }
+  body:has(.notice-print-target) .notice-letter-signoff { margin-top:8mm; font-size:11pt; }
+  body:has(.notice-print-target) .notice-letter-signer { font-size:13pt; }
 }
-
-.notice-letter-signature { display:block; width:140px; height:48px; object-fit:contain; margin:0 0 8px auto; background:white; }
-.notice-export-letter .notice-letter-signature { width:180px; height:60px; }
