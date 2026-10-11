@@ -24,6 +24,10 @@ import { WorkflowForm, type FormField } from "./workflow-form";
 import { TeacherPhoto } from "./teacher-photo";
 import { GuardianMessage } from "./guardian-message";
 import { AdminDelete } from "./admin-delete";
+import { NoticeComposer } from "./notice-composer";
+import { NoticeLetter } from "./notice-letter";
+import { getNoticeSchool, noticeDefaults } from "@/lib/data/notice-template";
+import { readNoticeDetails } from "@/lib/notice-template";
 import { photoUrls } from "@/lib/data/photos";
 
 export type SchoolModuleKind =
@@ -999,86 +1003,24 @@ export async function SchoolModule({ kind, teacherId }: { kind: SchoolModuleKind
       break;
     }
     case "notices": {
-      const notices = await schoolRows(
-        "notices",
-        ctx.schoolId,
-        "created_at",
-        false,
-      );
-      const manager = can(ctx, "notices.manage"),
-        teacher = ctx.role === "teacher";
-      content = (
-        <>
-          {(manager || teacher) && (
-            <Card className="mb-4 p-4">
-              {details(
-                L("Publish notice", "নোটিশ প্রকাশ"),
-                form("notice", [
-                  field("title", "Title", "শিরোনাম"),
-                  field("body", "Notice text", "নোটিশের লেখা", "textarea"),
-                  {
-                    name: "audience",
-                    label: L("Audience", "কার জন্য"),
-                    value: manager ? "all" : "sections",
-                    options: (manager
-                      ? [
-                          { value: "all", label: L("Everyone", "সবার জন্য") },
-                          {
-                            value: "staff",
-                            label: L("Staff", "কর্মীদের জন্য"),
-                          },
-                          {
-                            value: "guardians",
-                            label: L("Parents", "অভিভাবকদের জন্য"),
-                          },
-                        ]
-                      : []
-                    ).concat({
-                      value: "sections",
-                      label: L("One section", "একটি শাখা"),
-                    }),
-                  },
-                  {
-                    ...sectionField(
-                      manager
-                        ? sections
-                        : sections.filter((s) =>
-                            ctx.teachesSections.includes(s.id),
-                          ),
-                    ),
-                    required: false,
-                  },
-                ]),
-              )}
-            </Card>
-          )}
-          {list(notices, (r) => (
-            <>
-              <Link
-                className="text-lg font-bold text-brand"
-                href={`/notices/${str(r, "id")}`}
-              >
-                {str(r, "title")}
-              </Link>
-              <p className="text-xs text-ink-2">
-                {str(r, "created_at").slice(0, 10)}
-              </p>
-              <p className="mt-2 whitespace-pre-wrap break-words">
-                {str(r, "body")}
-              </p>
-              {!r.is_published && (
-                <Chip>{L("Withdrawn", "প্রত্যাহার করা হয়েছে")}</Chip>
-              )}
-              {manager && removalAdmin &&
-                r.is_published &&
-                details(
-                  L("Withdraw notice", "নোটিশ প্রত্যাহার"),
-                  form("withdraw_notice", [], { id: str(r, "id") }),
-                )}
-            </>
-          ))}
-        </>
-      );
+      const [notices, school] = await Promise.all([
+        schoolRows("notices", ctx.schoolId, "created_at", false),
+        getNoticeSchool(ctx.schoolId),
+      ]);
+      const manager = can(ctx, "notices.manage"), teacher = ctx.role === "teacher";
+      content = <>
+        {(manager || teacher) && <NoticeComposer id={randomUUID()} school={school} locale={locale} today={today} manager={manager}
+          sections={sections.filter(s => manager || ctx.teachesSections.includes(s.id)).map(s => ({id:s.id, label:`${locale === "bn" ? s.class_name_bn : s.class_name_en} (${s.name})`}))}
+          defaults={noticeDefaults(school, today, locale)} />}
+        {list(notices, r => <>
+          <Link className="mb-3 inline-flex min-h-11 items-center text-sm font-semibold text-brand" href={`/notices/${str(r,"id")}`}>
+            {L("Open notice · print / PDF", "নোটিশ খুলুন · প্রিন্ট / PDF")}
+          </Link>
+          <NoticeLetter school={school} title={str(r,"title")} body={str(r,"body")} date={str(r,"created_at").slice(0,10)} details={readNoticeDetails(r.template_details)} locale={locale} />
+          {!r.is_published && <Chip>{L("Withdrawn", "প্রত্যাহার করা হয়েছে")}</Chip>}
+          {manager && removalAdmin && r.is_published && details(L("Withdraw notice", "নোটিশ প্রত্যাহার"), form("withdraw_notice",[],{id:str(r,"id")}))}
+        </>)}
+      </>;
       break;
     }
     case "exams": {

@@ -4,12 +4,14 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { can, requireContext } from "@/lib/auth";
 import { supabaseServer } from "@/lib/supabase/server";
+import { noticeDetailsSchema } from "@/lib/notice-template";
 import { parseTaka } from "@/lib/format";
 
 export type WorkflowState = {
   success?: boolean;
   error?: string;
   invitePath?: string;
+  noticePath?: string;
 };
 
 export async function saveWorkflow(
@@ -49,6 +51,7 @@ export async function saveWorkflow(
     const operation = text("operation");
     const id = () => uuid("id");
     let invitePath: string | undefined;
+    let noticePath: string | undefined;
     switch (operation) {
       case "edit_class": {
         permit("academics.manage");
@@ -459,11 +462,13 @@ export async function saveWorkflow(
               school_id: ctx.schoolId,
               title: text("title"),
               body: z.string().min(1).max(10000).parse(value("body")),
+              template_details: noticeDetailsSchema.parse(JSON.parse(value("template_details") || "{}")),
               audience,
               target_ids: audience === "sections" ? [section!] : [],
               created_by: ctx.userId,
             }),
         );
+        noticePath = `/notices/${id()}`;
         break;
       }
       case "withdraw_notice": {
@@ -678,7 +683,7 @@ export async function saveWorkflow(
         throw new Error("invalid_input");
     }
     revalidatePath("/", "layout");
-    return { success: true, invitePath };
+    return { success: true, invitePath, noticePath };
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
     if (/duplicate|23505/i.test(message))
