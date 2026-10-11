@@ -59,10 +59,10 @@ export function AppShell({ school, user, yearName, nav, bottom, unread, children
                 </span>
               </span>
             </Link>
-            <Link href="/notifications" className="press relative grid size-10 place-items-center rounded-xl border border-line bg-surface hover:bg-surface-2" aria-label={t.common.notifications}>
+            <Link href="/notifications" className={cn("press relative grid size-11 place-items-center rounded-2xl border transition-colors", pathname === "/notifications" ? "border-violet-200 bg-sky text-brand" : "border-line bg-surface text-ink-2 hover:bg-sky")} aria-current={pathname === "/notifications" ? "page" : undefined} aria-label={`${t.common.notifications}${unread ? ` (${unread} ${locale === "bn" ? "অপঠিত" : "unread"})` : ""}`}>
               <Bell className="size-[19px]" />
               {unread > 0 && (
-                <span className="num absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-sun px-1 text-[11px] font-bold text-white ring-2 ring-brand-deep">
+                <span className="num absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-violet-600 px-1 text-[11px] font-bold text-white ring-2 ring-surface">
                   {unread > 99 ? "99+" : unread}
                 </span>
               )}

@@ -17,7 +17,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
     getT(),
     getSchool(ctx.schoolId),
     supabase.from("academic_years").select("name").eq("school_id", ctx.schoolId).eq("is_current", true).maybeSingle(),
-    supabase.from("notifications").select("id", { count: "exact", head: true }).is("read_at", null),
+    supabase.from("notifications").select("id", { count: "exact", head: true }).eq("user_id", ctx.userId).eq("school_id", ctx.schoolId).is("read_at", null),
     supabase.from("profiles").select("full_name").eq("id", ctx.userId).maybeSingle(),
   ]);
   const nav = visibleNav(ctx.role, [...ctx.permissions]);
