@@ -1,5 +1,6 @@
 /* A4 proportions on screen, with natural growth for longer notices. */
-.notice-letter { position:relative; isolation:isolate; display:flex; flex-direction:column; width:100%; aspect-ratio:210 / 297; min-height:min-content; background:#fff; color:#25243b; border:1px solid #e5e1f4; border-radius:20px; padding:0 18px 20px; box-shadow:0 8px 28px #5742a00b; overflow:hidden; overflow-wrap:anywhere; }
+[data-notice-export] { container-type:inline-size; }
+.notice-letter { position:relative; isolation:isolate; display:flex; flex-direction:column; width:100%; min-height:calc(100cqw * 297 / 210); background:#fff; color:#25243b; border:1px solid #e5e1f4; border-radius:20px; padding:0 18px 20px; box-shadow:0 8px 28px #5742a00b; overflow:hidden; overflow-wrap:anywhere; }
 .notice-letter-watermark { position:absolute; top:32%; left:15%; width:70%; max-height:55%; object-fit:contain; opacity:.035; pointer-events:none; z-index:-1; }
 .notice-letter-header { flex-shrink:0; display:flex; align-items:center; gap:12px; margin:0 -18px; padding:18px; background:linear-gradient(135deg,#f0edff,#f8f6ff); }
 .notice-letter-logo { width:52px; height:62px; object-fit:contain; flex-shrink:0; background:white; border:1px solid #e6e0f4; border-radius:14px; padding:5px; }
@@ -18,7 +19,7 @@
 .notice-letter-signer { font-weight:700; color:#6652bc; font-size:14px; }
 .notice-letter-signature { display:block; width:130px; height:42px; object-fit:contain; margin:0 0 6px auto; background:white; }
 /* 794 px at 182 mm PDF content width; comfortably inside one A4 page. */
-.notice-export-letter { width:794px; padding:0 32px 32px; }
+.notice-export-letter { width:794px; min-height:1123px; padding:0 32px 32px; }
 .notice-export-letter .notice-letter-header { margin:0 -32px; padding:28px 32px; gap:20px; }
 .notice-export-letter .notice-letter-logo { width:76px; height:88px; }
 .notice-export-letter .notice-letter-en { font-size:28px; }
