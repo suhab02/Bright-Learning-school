@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const noticeDetailsSchema = z.object({
   date: z.iso.date().optional(),
+  signature: z.string().max(40000).refine(value => !value || /^data:image\/jpeg;base64,[A-Za-z0-9+/]+={0,2}$/.test(value)).optional(),
   reference: z.string().trim().max(100).default(""),
   signer: z.string().trim().max(150).default(""),
   designation: z.string().trim().max(150).default(""),

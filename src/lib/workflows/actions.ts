@@ -462,7 +462,7 @@ export async function saveWorkflow(
               school_id: ctx.schoolId,
               title: text("title"),
               body: z.string().min(1).max(10000).parse(value("body")),
-              template_details: noticeDetailsSchema.parse(JSON.parse(value("template_details") || "{}")),
+              template_details: noticeDetailsSchema.parse(JSON.parse(z.string().max(65000).parse(form.get("template_details") || "{}"))),
               audience,
               target_ids: audience === "sections" ? [section!] : [],
               created_by: ctx.userId,
