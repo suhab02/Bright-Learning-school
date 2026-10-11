@@ -14,6 +14,10 @@ export type DirectoryRow = {
   guardian_id: string | null; guardian_name: string | null; guardian_phone: string | null; guardian_relationship: string | null;
 };
 
+export type StudentListRow = Pick<DirectoryRow,
+  "id" | "student_code" | "full_name_en" | "full_name_bn" | "status" | "photo_path" |
+  "roll_no" | "section_name" | "class_id" | "class_name_en" | "class_name_bn">;
+
 /** Sections of active classes, in class order: "Class One — A" */
 export const getSectionOptions = cache(async (schoolId: string): Promise<SectionOption[]> => {
   const supabase = await supabaseServer();
@@ -33,10 +37,10 @@ function cleanSearch(q: string) {
   return q.replace(/[,()*%\\:"']/g, " ").replace(/\s+/g, " ").trim().slice(0, 60);
 }
 
-export async function listStudents(opts: { q?: string; classId?: string; includeLeft?: boolean; page?: number }) {
+export async function listStudents(opts: { schoolId: string; q?: string; classId?: string; includeLeft?: boolean; page?: number }) {
   const supabase = await supabaseServer();
   const page = Math.max(1, opts.page ?? 1);
-  let query = supabase.from("student_directory").select("*", { count: "exact" });
+  let query = supabase.from("student_directory").select("id,student_code,full_name_en,full_name_bn,status,photo_path,roll_no,section_name,class_id,class_name_en,class_name_bn", { count: "exact" }).eq("school_id", opts.schoolId);
   if (!opts.includeLeft) query = query.in("status", ["active", "applicant"]);
   if (opts.classId) query = query.eq("class_id", opts.classId);
   const q = cleanSearch(opts.q ?? "");
@@ -54,7 +58,7 @@ export async function listStudents(opts: { q?: string; classId?: string; include
     .order("full_name_en")
     .range(from, from + PAGE_SIZE - 1);
   if (error) throw error;
-  return { rows: (data ?? []) as DirectoryRow[], total: count ?? 0, page, pages: Math.max(1, Math.ceil((count ?? 0) / PAGE_SIZE)) };
+  return { rows: (data ?? []) as StudentListRow[], total: count ?? 0, page, pages: Math.max(1, Math.ceil((count ?? 0) / PAGE_SIZE)) };
 }
 
 export type GuardianLink = { id: string; full_name: string; phone: string | null; email: string | null; relationship: string; is_primary: boolean };

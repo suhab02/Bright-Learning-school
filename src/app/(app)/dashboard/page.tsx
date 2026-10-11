@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { CalendarCheck, HandCoins, Megaphone, UserPlus, ChartColumn, Wallet, CircleCheck, Circle, GraduationCap, Users, UserRound, TrendingUp, Landmark, AlertCircle, ChevronRight } from "lucide-react";
 import { can, requireContext, type AppContext } from "@/lib/auth";
+import { getProfileName } from "@/lib/data/profile";
 import { getT } from "@/lib/i18n/server";
 import { supabaseServer } from "@/lib/supabase/server";
 import { getSchool } from "@/lib/data/school";
@@ -39,16 +40,16 @@ async function Dashboard() {
   const today = dhakaToday();
   const finance = can(ctx, "reports.view");
 
-  const [countsRes, dayRes, monthRes, yearRes, seriesRes, feeRes, { data: me }] = await Promise.all([
+  const [countsRes, dayRes, monthRes, yearRes, seriesRes, feeRes, profileName] = await Promise.all([
     supabase.rpc("dashboard_counts", { p_school: ctx.schoolId }),
     finance ? supabase.rpc("finance_summary", { p_school: ctx.schoolId, p_from: today, p_to: today }) : null,
     finance ? supabase.rpc("finance_summary", { p_school: ctx.schoolId, p_from: monthStart(today), p_to: today }) : null,
     finance ? supabase.rpc("finance_summary", { p_school: ctx.schoolId, p_from: yearStart(today), p_to: today }) : null,
     finance ? supabase.rpc("monthly_income_expense", { p_school: ctx.schoolId, p_from: monthsBack(today, 11), p_to: today }) : null,
     supabase.from("fee_structures").select("id", { count: "exact", head: true }).eq("school_id", ctx.schoolId),
-    supabase.from("profiles").select("full_name").eq("id", ctx.userId).maybeSingle(),
+    getProfileName(ctx.userId),
   ]);
-  const displayName = me?.full_name || ctx.email?.split("@")[0] || "";
+  const displayName = profileName || ctx.email?.split("@")[0] || "";
   if (countsRes.error) throw countsRes.error;
   const c = countsRes.data as Counts;
   const day = dayRes?.data as Summary | undefined;

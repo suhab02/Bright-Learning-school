@@ -4,7 +4,7 @@ import { GraduationCap, Plus, ChevronRight } from "lucide-react";
 import { can, requireContext } from "@/lib/auth";
 import { getT } from "@/lib/i18n/server";
 import { getSchool } from "@/lib/data/school";
-import { className, displayName, getSectionOptions, listStudents, type DirectoryRow } from "@/lib/data/students";
+import { className, displayName, getSectionOptions, listStudents, type StudentListRow } from "@/lib/data/students";
 import { formatNumber, toBnDigits } from "@/lib/format";
 import { Card, Skeleton } from "@/components/ui";
 import { Avatar, Chip, EmptyState, PageHeader } from "@/components/page";
@@ -27,9 +27,9 @@ async function StudentList({ searchParams }: { searchParams: Promise<SP> }) {
   const page = Number(one(sp.page) ?? 1) || 1;
   const [sections, list] = await Promise.all([
     getSectionOptions(ctx.schoolId),
-    listStudents({ q, classId, includeLeft, page }),
+    listStudents({ schoolId: ctx.schoolId, q, classId, includeLeft, page }),
   ]);
-  const groups = new Map<string, DirectoryRow[]>();
+  const groups = new Map<string, StudentListRow[]>();
   for (const row of list.rows) {
     const key = row.class_id ?? "unassigned";
     groups.set(key, [...(groups.get(key) ?? []), row]);
