@@ -8,7 +8,7 @@ export type SchoolRow = {
   description: string | null; head_teacher_name: string | null; address_line: string | null;
   village_area: string | null; union_name: string | null; upazila: string | null; district: string | null;
   division: string | null; postal_code: string | null; phone: string | null; whatsapp: string | null;
-  email: string | null; website: string | null; facebook_page_url: string | null; maps_url: string | null; latitude: number | null;
+  email: string | null; website: string | null; facebook_page_url: string | null; facebook_post_preview: { url:string; text:string; date:string; savedAt:string } | null; maps_url: string | null; latitude: number | null;
   longitude: number | null; established_year: number | null; registration_no: string | null;
   logo_path: string | null; primary_color: string; theme: string; default_locale: "bn" | "en";
   use_bengali_digits: boolean; receipt_header: string | null; report_header: string | null;

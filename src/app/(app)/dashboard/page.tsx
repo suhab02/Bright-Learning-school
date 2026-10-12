@@ -143,7 +143,7 @@ async function Dashboard() {
       )}
 
       <div className="dashboard-actions"><QuickActions ctx={ctx} t={t} /></div>
-      {school.facebook_page_url && <FacebookUpdates pageUrl={school.facebook_page_url} locale={locale} schoolName={locale === "bn" ? school.name_bn : school.name_en} />}
+      {school.facebook_page_url && <FacebookUpdates postPreview={school.facebook_post_preview} pageUrl={school.facebook_page_url} locale={locale} schoolName={locale === "bn" ? school.name_bn : school.name_en} />}
 
       <SectionTitle>{t.dashboard.today}</SectionTitle>
       <div className="grid grid-cols-2 gap-3">
