@@ -19,7 +19,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
     getSchool(ctx.schoolId),
     supabase.from("academic_years").select("name").eq("school_id", ctx.schoolId).eq("is_current", true).maybeSingle(),
     supabase.from("notifications").select("id", { count: "exact", head: true }).eq("user_id", ctx.userId).eq("school_id", ctx.schoolId).is("read_at", null),
-    getProfileName(ctx.userId),
+    getProfileName(ctx.userId, ctx.schoolId),
   ]);
   const nav = visibleNav(ctx.role, [...ctx.permissions]);
   const brand = isHexColor(school.primary_color) ? school.primary_color : "#114364";

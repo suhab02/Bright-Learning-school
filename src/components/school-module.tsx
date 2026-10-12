@@ -669,7 +669,7 @@ export async function SchoolModule({ kind, teacherId }: { kind: SchoolModuleKind
             return (
               <>
                 <h2 className="font-bold">
-                  {str(p ?? {}, "full_name") ||
+                  {str(r, "display_name") || str(p ?? {}, "full_name") ||
                     str(p ?? {}, "email") ||
                     str(r, "user_id")}
                 </h2>
@@ -683,6 +683,13 @@ export async function SchoolModule({ kind, teacherId }: { kind: SchoolModuleKind
                     str(r, "status") === "active" ? "সক্রিয়" : "স্থগিত",
                   )}
                 </p>
+                {owner && role !== "guardian" && details(
+                  L("Edit name", "নাম সম্পাদনা"),
+                  form("member_name", [field(
+                    "full_name", "Name", "নাম", "text", true,
+                    str(r, "display_name") || str(p ?? {}, "full_name"),
+                  )], { member_id: str(r, "id") }),
+                )}
                 {owner && role !== "super_admin" && (
                   <>
                     {details(

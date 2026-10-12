@@ -48,7 +48,7 @@ async function Dashboard() {
     finance ? supabase.rpc("finance_summary", { p_school: ctx.schoolId, p_from: yearStart(today), p_to: today }) : null,
     finance ? supabase.rpc("monthly_income_expense", { p_school: ctx.schoolId, p_from: monthsBack(today, 11), p_to: today }) : null,
     supabase.from("fee_structures").select("id", { count: "exact", head: true }).eq("school_id", ctx.schoolId),
-    getProfileName(ctx.userId),
+    getProfileName(ctx.userId, ctx.schoolId),
   ]);
   const displayName = profileName || ctx.email?.split("@")[0] || "";
   if (countsRes.error) throw countsRes.error;

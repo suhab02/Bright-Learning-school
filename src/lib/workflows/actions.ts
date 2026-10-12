@@ -356,6 +356,18 @@ export async function saveWorkflow(
         );
         break;
       }
+      case "member_name": {
+        if (ctx.role !== "super_admin") throw new Error("permission_denied");
+        const memberId = uuid("member_id");
+        const name = z.string().min(1).max(120).parse(value("full_name"));
+        const { data, error } = await db.from("school_members")
+          .update({ display_name: name })
+          .eq("id", memberId).eq("school_id", ctx.schoolId)
+          .neq("role_key", "guardian").select("id").maybeSingle();
+        check({ error });
+        if (!data) throw new Error("permission_denied");
+        break;
+      }
       case "membership": {
         check(
           await db.rpc("manage_school_member", {
