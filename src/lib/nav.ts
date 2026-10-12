@@ -2,7 +2,7 @@ import type { Dictionary } from "./i18n";
 import type { Role } from "./auth";
 
 export type NavKey = keyof Dictionary["nav"];
-export type NavItem = { key: NavKey; href: string; icon: string; perms?: string[]; teacher?: boolean; ownerOnly?: boolean };
+export type NavItem = { key: NavKey; href: string; icon: string; perms?: string[]; teacher?: boolean; ownerOnly?: boolean; adminOnly?: boolean };
 
 /** Visibility is a convenience only — the database enforces the real rules. */
 export const STAFF_NAV: NavItem[] = [
@@ -21,6 +21,7 @@ export const STAFF_NAV: NavItem[] = [
   { key: "notices", href: "/notices", icon: "Megaphone" },
   { key: "staff", href: "/staff", icon: "ShieldCheck", perms: ["staff.manage"] },
   { key: "settings", href: "/settings", icon: "Settings", perms: ["settings.manage"] },
+  { key: "facebook", href: "/facebook", icon: "Share2", adminOnly: true },
   { key: "help", href: "/help", icon: "LifeBuoy" },
 ];
 
@@ -35,7 +36,7 @@ export const GUARDIAN_NAV: NavItem[] = [
 export function visibleNav(role: Role, perms: string[]): NavItem[] {
   if (role === "guardian") return GUARDIAN_NAV;
   return STAFF_NAV.filter((i) =>
-    role === "super_admin" || !i.perms || i.perms.some((p) => perms.includes(p)) || (i.teacher && role === "teacher"));
+    (!i.adminOnly || role === "admin" || role === "super_admin") && (role === "super_admin" || !i.perms || i.perms.some((p) => perms.includes(p)) || (i.teacher && role === "teacher")));
 }
 
 /** Phone bottom bar: the four most-used items for this role, plus "More". */
