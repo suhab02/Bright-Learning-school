@@ -4,7 +4,7 @@ const en = {
     dashboard: "Dashboard", students: "Students", guardians: "Guardians", teachers: "Teachers",
     attendance: "Attendance", classes: "Classes", homework: "Homework", exams: "Examinations",
     fees: "Tuition fees", payments: "Payments", expenses: "Expenses", reports: "Reports",
-    notices: "Notices", staff: "Staff management", settings: "Settings", help: "Help",
+    facebook: "Facebook Manager", notices: "Notices", staff: "Staff management", settings: "Settings", help: "Help",
     home: "Home", profile: "Profile", more: "More", menu: "Menu",
   },
   common: {

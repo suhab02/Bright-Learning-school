@@ -6,7 +6,7 @@ const bn: Dictionary = {
     dashboard: "ড্যাশবোর্ড", students: "শিক্ষার্থী", guardians: "অভিভাবক", teachers: "শিক্ষক",
     attendance: "হাজিরা", classes: "শ্রেণি", homework: "বাড়ির কাজ", exams: "পরীক্ষা",
     fees: "বেতন ও ফি", payments: "পেমেন্ট", expenses: "খরচ", reports: "প্রতিবেদন",
-    notices: "নোটিশ", staff: "কর্মী ব্যবস্থাপনা", settings: "সেটিংস", help: "সহায়তা",
+    facebook: "ফেসবুক ম্যানেজার", notices: "নোটিশ", staff: "কর্মী ব্যবস্থাপনা", settings: "সেটিংস", help: "সহায়তা",
     home: "হোম", profile: "প্রোফাইল", more: "আরও", menu: "মেনু",
   },
   common: {
