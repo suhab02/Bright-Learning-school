@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { CalendarCheck, HandCoins, Megaphone, UserPlus, ChartColumn, Wallet, CircleCheck, Circle, GraduationCap, Users, UserRound, TrendingUp, Landmark, AlertCircle, ChevronRight } from "lucide-react";
 import { can, requireContext, type AppContext } from "@/lib/auth";
+import { FacebookUpdates } from "@/components/facebook/updates";
 import { getProfileName } from "@/lib/data/profile";
 import { getT } from "@/lib/i18n/server";
 import { supabaseServer } from "@/lib/supabase/server";
@@ -142,6 +143,7 @@ async function Dashboard() {
       )}
 
       <div className="dashboard-actions"><QuickActions ctx={ctx} t={t} /></div>
+      {school.facebook_page_url && <FacebookUpdates pageUrl={school.facebook_page_url} locale={locale} schoolName={locale === "bn" ? school.name_bn : school.name_en} />}
 
       <SectionTitle>{t.dashboard.today}</SectionTitle>
       <div className="grid grid-cols-2 gap-3">
