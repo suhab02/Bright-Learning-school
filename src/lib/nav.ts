@@ -2,7 +2,7 @@ import type { Dictionary } from "./i18n";
 import type { Role } from "./auth";
 
 export type NavKey = keyof Dictionary["nav"];
-export type NavItem = { key: NavKey; href: string; icon: string; perms?: string[]; teacher?: boolean; ownerOnly?: boolean; adminOnly?: boolean };
+export type NavItem = { key: NavKey; href: string; icon: string; perms?: string[]; teacher?: boolean; ownerOnly?: boolean };
 
 /** Visibility is a convenience only — the database enforces the real rules. */
 export const STAFF_NAV: NavItem[] = [
@@ -21,7 +21,7 @@ export const STAFF_NAV: NavItem[] = [
   { key: "notices", href: "/notices", icon: "Megaphone" },
   { key: "staff", href: "/staff", icon: "ShieldCheck", perms: ["staff.manage"] },
   { key: "settings", href: "/settings", icon: "Settings", perms: ["settings.manage"] },
-  { key: "facebook", href: "/facebook", icon: "Share2", adminOnly: true },
+  { key: "facebook", href: "/facebook", icon: "Share2" },
   { key: "help", href: "/help", icon: "LifeBuoy" },
 ];
 
@@ -31,17 +31,18 @@ export const GUARDIAN_NAV: NavItem[] = [
   { key: "homework", href: "/portal/homework", icon: "NotebookPen" },
   { key: "fees", href: "/portal/fees", icon: "Wallet" },
   { key: "profile", href: "/portal/profile", icon: "UserRound" },
+  { key: "facebook", href: "/facebook", icon: "Share2" },
 ];
 
 export function visibleNav(role: Role, perms: string[]): NavItem[] {
   if (role === "guardian") return GUARDIAN_NAV;
   return STAFF_NAV.filter((i) =>
-    (!i.adminOnly || role === "admin" || role === "super_admin") && (role === "super_admin" || !i.perms || i.perms.some((p) => perms.includes(p)) || (i.teacher && role === "teacher")));
+    role === "super_admin" || !i.perms || i.perms.some((p) => perms.includes(p)) || (i.teacher && role === "teacher"));
 }
 
 /** Phone bottom bar: the four most-used items for this role, plus "More". */
 export function bottomNav(role: Role, items: NavItem[]): NavItem[] {
-  if (role === "guardian") return items;
+  if (role === "guardian") return ["home", "attendance", "fees", "profile"].map(k => items.find(i => i.key === k)).filter(Boolean) as NavItem[];
   const pref: NavKey[] = role === "accountant" ? ["dashboard", "fees", "payments", "expenses"]
     : role === "teacher" ? ["dashboard", "attendance", "homework", "students"]
     : ["dashboard", "students", "attendance", "fees"];
