@@ -11,6 +11,12 @@ export function facebookPageUrl(value:string|null|undefined):string|null {
     return `https://www.facebook.com${p}`;
   }catch{return null;}
 }
+/** Only embed a public post belonging to the configured school Page. */
+export function facebookPostUrl(value:string|null|undefined,pageUrl:string|null):string|null {
+  const page=facebookPageUrl(pageUrl);
+  if(!page||typeof value!=='string'||value.length>500)return null;
+  return value.startsWith(page+'/posts/')&&/^https:\/\/www[.]facebook[.]com\/[A-Za-z0-9.]+\/posts\/[A-Za-z0-9]+$/.test(value)?value:null;
+}
 export function facebookFeedUrl(pageUrl:string,width:number,height:number) {
   const page=facebookPageUrl(pageUrl);if(!page)return null;
   const q=new URLSearchParams({href:page,tabs:'timeline',width:String(Math.max(180,Math.min(500,Math.floor(width)))),height:String(Math.max(300,Math.min(650,Math.floor(height)))),small_header:'true',adapt_container_width:'true',hide_cover:'false',show_facepile:'false'});
