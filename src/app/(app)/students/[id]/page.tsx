@@ -14,6 +14,7 @@ import { ProfilePhoto } from "../photo-picker";
 import { photoUrls } from "@/lib/data/photos";
 import { AdminDelete } from "@/components/admin-delete";
 import { GuardianMessage } from "@/components/guardian-message";
+import { schoolSmsConfig } from "@/lib/sms-config";
 
 export const metadata = { title: "Student" };
 
@@ -90,7 +91,7 @@ async function Profile({ params, searchParams }: { params: Promise<{ id: string 
                     <a href={`tel:${g.phone}`} aria-label={`${s.call} ${g.full_name}`}
                       className="press grid size-11 place-items-center rounded-2xl tint-green"><Phone className="size-5" /></a>
                   ) : undefined} />
-                {(can(ctx,"guardians.manage") || ctx.role === "teacher") && <div className="px-4 pb-3"><GuardianMessage name={g.full_name} phone={g.phone ?? ""} /></div>}
+                {(can(ctx,"guardians.manage") || ctx.role === "teacher") && <div className="px-4 pb-3"><GuardianMessage guardianId={g.id} name={g.full_name} phone={g.phone ?? ""} schoolSms={{allowed:can(ctx,"guardians.manage"),configured:Boolean(schoolSmsConfig(ctx.schoolId))}} /></div>}
               </li>
             ))}
           </ul>

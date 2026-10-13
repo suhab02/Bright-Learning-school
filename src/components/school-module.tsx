@@ -23,6 +23,7 @@ import { Chip, EmptyState, PageHeader, SectionTitle } from "./page";
 import { WorkflowForm, type FormField } from "./workflow-form";
 import { TeacherPhoto } from "./teacher-photo";
 import { GuardianMessage } from "./guardian-message";
+import { schoolSmsConfig } from "@/lib/sms-config";
 import { AdminDelete } from "./admin-delete";
 import { NoticeComposer } from "./notice-composer";
 import { NoticeLetter } from "./notice-letter";
@@ -872,7 +873,7 @@ export async function SchoolModule({ kind, teacherId }: { kind: SchoolModuleKind
           <p className="text-sm">
             {str(r, "phone")} · {str(r, "email")}
           </p>
-          <GuardianMessage name={str(r, "full_name")} phone={str(r, "phone")} />
+          <GuardianMessage guardianId={str(r,"id")} name={str(r, "full_name")} phone={str(r, "phone")} schoolSms={{allowed:can(ctx,"guardians.manage"),configured:Boolean(schoolSmsConfig(ctx.schoolId))}} />
           <p className="mt-2 text-sm text-ink-2">
             {links
               .filter((l) => str(l, "guardian_id") === str(r, "id"))
