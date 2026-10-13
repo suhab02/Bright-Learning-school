@@ -333,7 +333,12 @@ export async function saveWorkflow(
         if (guardian) await sameSchool("guardians", guardian);
         if (staff) await sameSchool("staff", staff);
         if (role === "guardian" && !guardian) throw new Error("invalid_input");
-        const { data, error } = await db.rpc("create_invitation", {
+        const { data, error } = role === "teacher" ? await db.rpc("invite_teacher", {
+          p_school: ctx.schoolId,
+          p_email: z.email().parse(value("email")),
+          p_name: z.string().min(1).max(120).parse(value("teacher_name")),
+          p_staff: staff,
+        }) : await db.rpc("create_invitation", {
           p_school: ctx.schoolId,
           p_email: z.email().parse(value("email")),
           p_role: role,

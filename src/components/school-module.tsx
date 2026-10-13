@@ -420,6 +420,13 @@ export async function SchoolModule({ kind, teacherId }: { kind: SchoolModuleKind
               return [label, subject].filter(Boolean).join(" / ");
             }).filter(Boolean),
           }))} />}
+          {!teacherId && ctx.role === "super_admin" && <Card className="my-4 p-4">
+            <p className="mb-3 text-sm text-ink-2">{L("Invite a teacher directly. Their profile appears here immediately; their account links when they accept. Assign classes from their profile.", "সরাসরি শিক্ষককে আমন্ত্রণ দিন। তার প্রোফাইল এখানে সঙ্গে সঙ্গে দেখাবে; আমন্ত্রণ গ্রহণ করলে অ্যাকাউন্ট যুক্ত হবে। প্রোফাইল থেকে শ্রেণির দায়িত্ব দিন।")}</p>
+            {details(L("Invite teacher", "শিক্ষককে আমন্ত্রণ"), form("invitation", [
+              field("teacher_name", "Teacher name", "শিক্ষকের নাম"),
+              field("email", "Email", "ইমেইল", "email"),
+            ], { role: "teacher" }))}
+          </Card>}
           {!teacherId && <Card className="my-4 p-4">
             <p className="mb-3 text-sm text-ink-2">{L("Save the teacher's details first, then open their profile to add a photo. JPG, PNG or WebP; photos are reduced for fast uploads.", "আগে শিক্ষকের তথ্য সংরক্ষণ করুন, তারপর তার প্রোফাইলে ছবি যোগ করুন। JPG, PNG বা WebP; দ্রুত আপলোডের জন্য ছবি ছোট করা হয়।")}</p>
             {details(
@@ -444,6 +451,10 @@ export async function SchoolModule({ kind, teacherId }: { kind: SchoolModuleKind
             <>
               <TeacherPhoto staffId={str(r, "id")} schoolId={ctx.schoolId} name={named(r, locale)} src={photos[str(r, "photo_path")] ?? null} />
               <h2 className="text-lg font-bold">{named(r, locale)}</h2>
+              {ctx.role === "super_admin" && details(L("Invite this teacher", "এই শিক্ষককে আমন্ত্রণ"), form("invitation", [
+                field("teacher_name", "Teacher name", "শিক্ষকের নাম", "text", true, str(r, "full_name_en")),
+                field("email", "Email", "ইমেইল", "email", true, str(r, "email")),
+              ], { role: "teacher", staff_id: str(r, "id") }))}
               <p className="text-sm text-ink-2">
                 {str(r, "staff_code")} · {str(r, "designation")} ·{" "}
                 {str(r, "phone")}
@@ -647,6 +658,7 @@ export async function SchoolModule({ kind, teacherId }: { kind: SchoolModuleKind
                 L("Create staff invitation", "কর্মীর আমন্ত্রণ তৈরি"),
                 form("invitation", [
                   field("email", "Email", "ইমেইল", "email"),
+                  field("teacher_name", "Teacher name (required for Teacher role)", "শিক্ষকের নাম (শিক্ষক ভূমিকার জন্য আবশ্যক)", "text", false),
                   {
                     name: "role",
                     label: L("Role", "ভূমিকা"),
